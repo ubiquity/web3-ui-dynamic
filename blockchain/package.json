@@ -1,0 +1,43 @@
+{
+  "license": "MIT",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "dev": "yarn run-p run:blockchain build:watch",
+    "prestart": "yarn run:blockchain &",
+    "start": "yarn run-p run:prettier build:deploy",
+    "prebuild": "yarn build:clean",
+    "build": "yarn hardhat compile",
+    "build:deploy": "yarn hardhat --network localhost run scripts/deploy-entry.ts",
+    "build:watch": "nodemon --verbose --exec 'yarn build:deploy'",
+    "build:clean": "yarn hardhat clean",
+    "run:blockchain": "yarn hardhat node",
+    "run:prettier": "shopt -s extglob && yarn prettier '?(tasks|scripts|test|frontend)/**/*' --write --ignore-unknown",
+    "run:test": "yarn hardhat test"
+  },
+  "devDependencies": {
+    "@nomiclabs/hardhat-ethers": "^2.0.1",
+    "@nomiclabs/hardhat-waffle": "^2.0.0",
+    "@types/chai": "^4.2.14",
+    "@types/mocha": "^8.0.4",
+    "@types/node": "^14.14.10",
+    "chai": "^4.2.0",
+    "dotenv": "^8.2.0",
+    "ethereum-waffle": "^3.1.1",
+    "ethers": "^5.0.0",
+    "hardhat": "^2.0.0",
+    "husky": "^4.2.5",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.2.1",
+    "ts-node": "^9.0.0",
+    "typescript": "^4.1.2"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^3.3.0",
+    "@types/fs-extra-promise": "^1.0.9",
+    "fs-extra-promise": "^1.0.1",
+    "hardhat-deploy": "^0.7.0-beta.44",
+    "hardhat-deploy-ethers": "^0.3.0-beta.7"
+  }
+}

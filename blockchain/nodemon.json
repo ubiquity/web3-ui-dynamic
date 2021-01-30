@@ -1,0 +1,13 @@
+{
+    "ignore": [
+        "**/*/cache/",
+        "**/*/artifacts/",
+        "**/*/node_modules/**/*"
+    ],
+    "events": {
+        "config": "exit",
+        "exit": "",
+        "restart": "clear && printf '\\033[3J'",
+        "start": "yarn build:clean && clear && printf '\\033[3J'"
+    }
+}

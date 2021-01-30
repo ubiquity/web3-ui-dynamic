@@ -1,0 +1,63 @@
+:root {
+  --blur: 24px;
+}
+* {
+  /* border: 1px solid; */
+  border: none;
+  border-radius: 4px;
+  line-height: 1;
+  font-size: 16px;
+  margin: auto;
+  padding: 8px;
+  /* font-family: sans-serif; */
+  /* background-color: #e8e8e8; */
+}
+
+input {
+  font: inherit;
+}
+
+input,
+button {
+  background-color: #fff;
+  padding: 16px 24px;
+}
+
+input[type="submit"],
+input[type="button"],
+button {
+  cursor: pointer;
+}
+
+p,
+span,
+label {
+  padding: 16px;
+}
+
+/* dark mode */
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #282828;
+  }
+  * {
+    color: #fff;
+  }
+  input,
+  button {
+    box-shadow: 0 0 16px #00000020;
+    background-color: #000;
+  }
+}
+/* // copy above */
+body[data-dark="true"] {
+  background-color: #282828;
+}
+body[data-dark="true"] * {
+  color: #fff;
+}
+body[data-dark="true"] input,
+body[data-dark="true"] button {
+  box-shadow: 0 0 16px #00000020;
+  background-color: #000;
+}

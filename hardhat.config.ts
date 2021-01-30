@@ -1,0 +1,1 @@
+./blockchain/hardhat.config.ts

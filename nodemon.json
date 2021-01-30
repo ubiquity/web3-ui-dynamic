@@ -1,0 +1,14 @@
+{
+    "ignore": [
+        "**/*/cache/",
+        "**/*/artifacts/",
+        "**/*/frontend/",
+        "**/*/node_modules/**/*"
+    ],
+    "events": {
+        "config": "exit",
+        "exit": "",
+        "restart": "clear && printf '\\033[3J'",
+        "start": "clear && printf '\\033[3J'"
+    }
+}
