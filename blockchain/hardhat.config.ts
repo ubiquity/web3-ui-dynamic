@@ -1,8 +1,8 @@
-import { task } from "hardhat/config";
 import "@nomiclabs/hardhat-waffle";
+import * as dotenv from "dotenv";
 import "hardhat-deploy";
 import "hardhat-deploy-ethers";
-import * as dotenv from "dotenv";
+import { task } from "hardhat/config";
 
 dotenv.config();
 
@@ -23,19 +23,23 @@ task("accounts", "Prints the list of accounts", async (args, hre) => {
 // import "./tasks/faucet";
 
 export default {
+	namedAccounts: {
+		sablier: "0xA4fc358455Febe425536fd1878bE67FfDBDEC59a",
+	},
+
 	networks: {
 		hardhat: {
 			chainId: 31337,
 			accounts: [
-        {
-          privateKey: process.env.TREASURY_PRIV_KEY,
-          balance: "10000000000000000000000",
-        },
-        {
-          privateKey: process.env.SECOND_ACC_PRIV_KEY,
-          balance: "10000000000000000000000",
-        },
-      ],
+				{
+					privateKey: process.env.TREASURY_PRIV_KEY,
+					balance: "10000000000000000000000",
+				},
+				{
+					privateKey: process.env.SECOND_ACC_PRIV_KEY,
+					balance: "10000000000000000000000",
+				},
+			],
 		},
 	},
 	solidity: {

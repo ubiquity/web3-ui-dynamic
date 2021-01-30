@@ -1,5 +1,5 @@
 import "@nomiclabs/hardhat-ethers";
-import { deployments, ethers } from "hardhat";
+import { deployments, ethers, getNamedAccounts } from "hardhat";
 
 const { deploy } = deployments;
 const provider = ethers.provider;
@@ -9,6 +9,8 @@ export async function deployer() {
 	let secondAccount;
 
 	[admin, secondAccount] = await ethers.getSigners();
+
+	const { sablier } = await getNamedAccounts();
 
 	const BondingShare = await deploy("BondingShare", {
 		from: admin.address,
@@ -33,5 +35,14 @@ export async function deployer() {
 
 	await manager.connect(admin).setuADTokenAddress(uAD.address);
 
-	return [{ name: "BondingShare", contractObj: bondingShare }];
+	const Bonding = await deploy("Bonding", {
+		from: admin.address,
+		args: [manager.address, sablier],
+	});
+
+	const bonding = new ethers.Contract(Bonding.address, Bonding.abi, provider);
+
+	await bondingShare.connect(admin).grantRole(ethers.utils.id("MINTER_ROLE"), bonding.address);
+
+	return [{ name: "Bonding", contractObj: bonding }];
 }
