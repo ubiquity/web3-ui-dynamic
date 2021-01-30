@@ -2,7 +2,7 @@ import { BigNumberish, ethers } from "ethers";
 import React from "react";
 
 import contractAddress from "../contracts/contract-address.json";
-import TokenArtifact from "../contracts/SBToken.json";
+import TokenArtifact from "../contracts/BondingShare.json";
 
 import { ConnectWallet } from "./ConnectWallet";
 import { Loading } from "./Loading";

@@ -1,8 +1,9 @@
 {
     "license": "MIT",
     "scripts": {
-        "postinstall": "ln -s ./blockchain/hardhat.config.ts ./ && ln -s ./blockchain/tsconfig.json ./",
         "dev": "yarn run-p run:blockchain build:watch run:ui",
+        "_________": "",
+        "postinstall": "ln -s ./blockchain/hardhat.config.ts ./ && ln -s ./blockchain/tsconfig.json ./",
         "start": "yarn run-p build:deploy run:ui",
         "prestart": "yarn run:blockchain &",
         "prebuild": "yarn lint",

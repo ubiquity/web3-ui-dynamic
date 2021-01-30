@@ -10,7 +10,7 @@
     "prebuild": "yarn build:clean",
     "build": "yarn hardhat compile",
     "build:deploy": "yarn hardhat --network localhost run scripts/deploy-entry.ts",
-    "build:watch": "nodemon --verbose --exec 'yarn build:deploy'",
+    "build:watch": "nodemon --watch contracts --verbose --exec 'yarn build:deploy'",
     "build:clean": "yarn hardhat clean",
     "run:blockchain": "yarn hardhat node",
     "run:prettier": "shopt -s extglob && yarn prettier '?(tasks|scripts|test|frontend)/**/*' --write --ignore-unknown",
