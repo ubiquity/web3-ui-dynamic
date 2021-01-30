@@ -109,5 +109,9 @@ node_modules
 cache
 artifacts
 deployments
+<<<<<<< HEAD
 
 .DS_Store
+=======
+.DS_Store
+>>>>>>> Ignore DS_Store
