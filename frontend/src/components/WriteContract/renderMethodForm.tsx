@@ -1,12 +1,11 @@
 import React from "react";
 import Draggable from "react-draggable";
-import { RenderParams } from "./@types";
 import { submitHandlerCurry } from "./submitHandlerCurry";
 
 import { sentenceCase } from "change-case";
 import { titleCase } from "title-case";
 
-export function renderMethodForm({ method, buffer, contract, state, genericTransactionHandler }: RenderParams) {
+export function renderMethodForm({ method, buffer, contract, state, genericTransactionHandler }) {
 	return (
 		<Draggable key={method.name}>
 			<form

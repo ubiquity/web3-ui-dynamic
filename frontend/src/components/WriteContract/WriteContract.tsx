@@ -1,7 +1,6 @@
 import { renderArtifactAsUserInterface } from "./renderArtifactAsUserInterface";
 import React from "react";
-import { WriteContractParams } from "./@types";
-export function WriteContract({ abi, contract, state, genericTransactionHandler }: WriteContractParams) {
+export function WriteContract({ abi, contract, state, genericTransactionHandler }) {
 	return (
 		<div id="methodUi">
 			{renderArtifactAsUserInterface({

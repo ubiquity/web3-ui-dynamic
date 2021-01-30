@@ -1,7 +1,6 @@
-import { SubmitParams } from "./@types";
 import { submitHandler } from "./submitHandler";
 
-export function submitHandlerCurry({ state, contract, method, genericTransactionHandler }: SubmitParams) {
+export function submitHandlerCurry({ state, contract, method, genericTransactionHandler }) {
 	return async (event) => {
 		try {
 			state.writeContract = await submitHandler({ event, contract, method: method.name, genericTransactionHandler });

@@ -1,14 +1,13 @@
-import { WriteContractParams, AbiMethod } from "./@types";
 import { listInputItem } from "./listInputItem";
 import { renderMethodForm } from "./renderMethodForm";
 
-export function renderArtifactAsUserInterface({ abi, contract, state, genericTransactionHandler }): WriteContractParams {
+export function renderArtifactAsUserInterface({ abi, contract, state, genericTransactionHandler }) {
 	const abiMapped = abi.map(_mapping(contract, state, genericTransactionHandler)).filter(Boolean);
 	return abiMapped;
 }
 
 function _mapping(contract, state, genericTransactionHandler) {
-	return function mapping(method: AbiMethod) {
+	return function mapping(method) {
 		if (method.type !== "function") {
 			return false;
 		}

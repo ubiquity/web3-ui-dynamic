@@ -1,6 +1,6 @@
-import TokenArtifact from "../contracts/SBToken.json";
 import { ethers } from "ethers";
 import React from "react";
+import TokenArtifact from "../contracts/BondingShare.json";
 import { Dapp, renderBalance } from "./Dapp";
 import { NoTokensMessage } from "./NoTokensMessage";
 import { TransactionErrorMessage } from "./TransactionErrorMessage";

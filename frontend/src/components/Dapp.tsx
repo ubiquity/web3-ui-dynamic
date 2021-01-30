@@ -108,6 +108,7 @@ export class Dapp extends React.Component {
 	}
 
 	async _intializeEthers() {
+		console.log({ contractAddress, TokenArtifact });
 		this._provider = new ethers.providers.Web3Provider(window.ethereum);
 		this._contract = new ethers.Contract(contractAddress.Token, TokenArtifact.abi, this._provider.getSigner());
 	}
@@ -131,7 +132,6 @@ export class Dapp extends React.Component {
 	}
 
 	async _updateBalance() {
-		// debugger;
 		const balance = await this._contract.balanceOf(this.state.selectedAddress);
 		// console.log(ethers.utils.formatEther(balance));
 		// debugger;

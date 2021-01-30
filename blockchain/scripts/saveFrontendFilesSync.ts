@@ -13,11 +13,13 @@ export async function saveFrontendFilesSync(contract: Contract, contractArtifact
 		await fs.mkdirAsync(frontendContractsDirectory);
 	}
 
-	const contractAddressJson = JSON.stringify({ Contract: contract.address });
+	const contractAddressJson = JSON.stringify({ Token: contract.address });
 	console.log(`writing "${contractAddressJson}" to "${fullPathToJson}"`);
 	await fs.writeFileAsync(fullPathToJson, contractAddressJson, { encoding: "utf8", flag: "w" });
+
 	const contractArtifact = await artifacts.readArtifact(path.parse(contractArtifactFileName).name);
 	const fullPathToArtifactJson = path.join(frontendContractsDirectory, contractArtifactFileName);
 	console.log(`writing "{contractArtifact}" to "${fullPathToArtifactJson}"`);
+
 	await fs.writeFileAsync(fullPathToArtifactJson, JSON.stringify(contractArtifact));
 }

@@ -11,8 +11,8 @@ async function main(hre: HardhatRuntimeEnvironment) {
 		networkIsHardhat();
 	}
 	const deployedContracts = await deployer();
-	for (const contract of deployedContracts) {
-		return await saveFrontendFilesSync(contract.contractObj, `${contract.name}.json`);
+	for (const deployed of deployedContracts) {
+		return await saveFrontendFilesSync(deployed.contract, `${deployed.name}.json`);
 	}
 }
 
