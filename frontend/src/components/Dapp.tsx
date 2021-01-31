@@ -1,9 +1,6 @@
 import { BigNumberish, ethers } from "ethers";
 import React from "react";
-
-import contractAddress from "../contracts/contract-address.json";
-import TokenArtifact from "../contracts/BondingShare.json";
-
+import protocol from "../contracts/protocol.json";
 import { ConnectWallet } from "./ConnectWallet";
 import { Loading } from "./Loading";
 import { Main } from "./Main";
@@ -11,9 +8,7 @@ import { NoWalletDetected } from "./NoWalletDetected";
 import { genericTransactionHandler } from "./WriteContract/genericTransactionHandler";
 
 const HARDHAT_NETWORK_ID = "31337";
-
 export const ERROR_CODE_TX_REJECTED_BY_USER = 4001;
-
 declare global {
 	interface Window {
 		ethereum: any;
@@ -29,10 +24,8 @@ export type InitialState = {
 	networkError?: string;
 	writeContract?: any;
 	readData?: { [key: string]: any }; // ASSOCIATED WITH EACH FORM ID
-	// for (const method of TokenArtifact.abi) {
 	// TODO DYNAMIC TYPINGS GENERATION ITERATE THROUGH ARRAY OF FUNCTION NAMES
 	// type methods = TokenArtifact.abi.filter((e) => !!e.name);
-	// }
 };
 
 export const renderBalance = (_balance: BigNumberish) => {
@@ -108,9 +101,12 @@ export class Dapp extends React.Component {
 	}
 
 	async _intializeEthers() {
-		console.log({ contractAddress, TokenArtifact });
-		this._provider = new ethers.providers.Web3Provider(window.ethereum);
-		this._contract = new ethers.Contract(contractAddress.Token, TokenArtifact.abi, this._provider.getSigner());
+		for (const address in protocol) {
+			const contract = protocol[address] as typeof import("../contracts/BondingShare.json");
+			console.log({ address, abi: contract.abi });
+			this._provider = new ethers.providers.Web3Provider(window.ethereum);
+			this._contract = new ethers.Contract(address, contract.abi, this._provider.getSigner());
+		}
 	}
 
 	_startPollingData() {
