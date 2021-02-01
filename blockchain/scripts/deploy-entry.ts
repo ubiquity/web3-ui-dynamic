@@ -1,19 +1,22 @@
 import "@nomiclabs/hardhat-ethers";
 import "@nomiclabs/hardhat-waffle";
+import fs from "fs";
 // import { DeployFunction } from "hardhat-deploy/types";
 import hre, { network } from "hardhat";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { deployer } from "./deployer";
-import { saveFrontendFilesSync } from "./saveFrontendFilesSync";
 
 async function main(hre: HardhatRuntimeEnvironment) {
 	if (network.name === "hardhat") {
 		networkIsHardhat();
 	}
+	let protocolData = {};
 	const deployedContracts = await deployer();
-	for (const deployed of deployedContracts) {
-		return await saveFrontendFilesSync(deployed.contract, `${deployed.name}.json`);
+	for (const { contractName, contractAddress } of deployedContracts) {
+		const contractArtifact = JSON.parse((await fs.promises.readFile(`./blockchain/artifacts/contracts/${contractName}.sol/${contractName}.json`)).toString());
+		protocolData[contractAddress] = contractArtifact;
 	}
+	await fs.promises.writeFile("./deploy-results.json", JSON.stringify(protocolData));
 }
 
 main(hre)
