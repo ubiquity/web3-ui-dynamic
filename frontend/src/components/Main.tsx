@@ -7,7 +7,14 @@ export function Main({ dapp }: { dapp: Dapp }) {
 	const state = dapp.state as InitialState;
 	let contractsUI = [] as any[];
 
-	console.trace(state.contracts);
+	if (!state.contracts) {
+		throw new Error("no state.contracts");
+		// console.log(state);
+		// debugger;
+	}
+	//  else {
+	// debugger;
+	// }
 
 	for (const address in state.contracts) {
 		const abi = (state.deployment as typeof Deployment)[address].abi;
@@ -25,7 +32,7 @@ export function Main({ dapp }: { dapp: Dapp }) {
 		);
 	}
 
-	// console.trace({ contractsUI, contracts: state.contracts });
+	// console.log({ contractsUI, contracts: state.contracts });
 
 	return <div>{contractsUI}</div>;
 	// return [common(dapp), contractsUI];

@@ -13,48 +13,41 @@ declare global {
 }
 const HARDHAT_NETWORK_ID = "31337";
 
+type Artifact = typeof import("../contracts/BondingShare.json"); // Artifact
+
 type _SKM1<T, K extends keyof T, V> = { [k in K]: V };
 type _SKM2<T, V> = _SKM1<T, keyof T, V>; // ALL KEYS
 type DeploymentContracts = Partial<_SKM2<typeof Deployment, ethers.Contract>>; // PARTIAL KEYS
 export type DeploymentAddress = keyof DeploymentContracts;
 
 export type InitialState = {
+	provider: ethers.providers.Web3Provider | null;
 	userWalletAddress: string | null;
 	deployment: typeof Deployment | null; // ARTIFACTS WITH ABIs
 	contracts: DeploymentContracts | null; // ETHERS.CONTRACTS
-	// network: {
 	transaction: string | null;
 	write: any;
 	errors: {
 		transaction: string | null;
 		network: string | null;
 	};
-	// };
 };
-
-// export const renderBalance = (_balance: BigNumberish) => {
-// 	const balance = ethers.utils.formatEther(_balance).toString();
-// 	return balance.substring(0, balance.indexOf(`.`) + 3);
-// };
-
 export class Dapp extends React.Component {
 	state: InitialState;
-	_provider?: ethers.providers.Web3Provider;
 
 	constructor(props) {
 		super(props);
 		this.state = {
+			provider: null,
 			userWalletAddress: null,
 			deployment: null, // ARTIFACTS WITH ABIs
 			contracts: null, // ETHERS.CONTRACTS
-			// network: {
 			write: null,
 			transaction: null,
 			errors: {
 				transaction: null,
 				network: null,
 			},
-			// },
 		};
 	}
 
@@ -74,14 +67,14 @@ export class Dapp extends React.Component {
 				/>
 			);
 		} else {
-			// console.trace(this);
+			console.log(this.state);
 			return <Main dapp={this} />;
 		}
 
 		// if (!this.state.tokenData || !this.state.balance) {
 		// 	return <Loading />;
 		// }
-		// console.trace(this.state);
+		// console.log(this.state);
 
 		// if (!this.state.deployment) {
 		// 	return <Loading />;
@@ -93,67 +86,68 @@ export class Dapp extends React.Component {
 	// }
 
 	async _connectWallet() {
-		// console.trace();
+		// THERES AN ASYNC ISSUE HERE
 		const [userWalletAddress] = await window.ethereum.enable();
 		if (!this._checkNetwork()) {
 			return;
 		}
+		const deployment = await this.fetchRemoteDeployResults(); // || Deployment;
+		await this.loginUser(userWalletAddress, deployment);
 
-		this.state.deployment = (await fetchRemoteDeployResults()) || Deployment;
+		window.ethereum.on("accountsChanged", accountsChangedHandler);
+		window.ethereum.on("networkChanged", networkChangedHandler);
+		// debugger;
 
-		this._initialize(userWalletAddress);
-
-		async function fetchRemoteDeployResults() {
-			const response = await fetch(
-				`https://gist.githubusercontent.com/kamiebisu/fc4299819fd6eee7cdcc9534bdb8be76/raw/3e65c40932c9d99e423a120327efe5f079fc86e1/deploy-results.json`
-			);
-			const parsed = (await response.json()) as typeof Deployment;
-			return parsed;
+		function networkChangedHandler([newAddress]) {
+			// this._stopPollingData();
+			this._resetState();
 		}
-
-		window.ethereum.on("accountsChanged", ([newAddress]) => {
+		function accountsChangedHandler([newAddress]) {
 			// this._stopPollingData();
 
 			if (newAddress === undefined) {
 				return this._resetState();
 			}
 
-			this._initialize(newAddress);
-		});
-
-		window.ethereum.on("networkChanged", ([networkId]) => {
-			// this._stopPollingData();
-			this._resetState();
-		});
+			this.loginUser(newAddress);
+		}
 	}
 
-	_initialize(userAddress: string) {
-		this.setState({
-			userWalletAddress: userAddress,
-		});
+	async fetchRemoteDeployResults() {
+		const response = await fetch(
+			`https://gist.githubusercontent.com/kamiebisu/fc4299819fd6eee7cdcc9534bdb8be76/raw/3e65c40932c9d99e423a120327efe5f079fc86e1/deploy-results.json`
+		);
+		const parsed = (await response.json()) as typeof Deployment;
+		return parsed;
+	}
 
-		this._intializeEthers();
+	async loginUser(userWalletAddress: string, deployment) {
+		this.setState(await this._intializeEthers(deployment, userWalletAddress));
 		// this._getTokenData();
 		// this._startPollingData();
 	}
 
-	async _intializeEthers() {
-		this._provider = new ethers.providers.Web3Provider(window.ethereum);
+	async _intializeEthers(
+		deployment: typeof Deployment,
+		userWalletAddress: string
+	) {
+		const stateInitialization = {
+			provider: new ethers.providers.Web3Provider(window.ethereum),
+			contracts: {},
+			deployment: deployment,
+			userWalletAddress,
+		};
 
-		// this.state.contracts = this.state.contracts || {};
-		this.state.contracts = {};
-
-		for (const address in this.state.deployment) {
-			const contract = this.state.deployment[
-				address
-			] as typeof import("../contracts/BondingShare.json"); // Artifact
-
-			this.state.contracts[address] = new ethers.Contract(
+		for (const address in deployment) {
+			const contract = deployment[address] as Artifact;
+			stateInitialization.contracts[address] = new ethers.Contract(
 				address,
 				contract.abi,
-				this._provider.getSigner()
+				stateInitialization.provider.getSigner()
 			);
 		}
+
+		return stateInitialization;
 	}
 
 	// _startPollingData() {
