@@ -1,35 +1,57 @@
-import { ethers } from "ethers";
 import React from "react";
-
-import TokenArtifact from "../contracts/BondingShare.json";
-
-import { Dapp, renderBalance } from "./Dapp";
-import { NoTokensMessage } from "./NoTokensMessage";
-import { TransactionErrorMessage } from "./TransactionErrorMessage";
-import { WaitingForTransactionMessage } from "./WaitingForTransactionMessage";
-import { WriteContract } from "./WriteContract/WriteContract";
+import Deployment from "../@types/deployment.json"; // REFERENCE TYPING
+import { Dapp, DeploymentAddress, InitialState } from "./Dapp";
+import { renderArtifactAsUserInterface } from "./WriteContract/renderArtifactAsUserInterface";
 
 export function Main({ dapp }: { dapp: Dapp }) {
-	return (
-		<main>
-			<div>
-				<h1>
-					{dapp.state.tokenData?.name} ({dapp.state.tokenData?.symbol})
-				</h1>
-				<h2>Contract Debug UI</h2>
-				<h3 style={{ textTransform: "initial" }}>
-					Welcome {dapp.state.selectedAddress}, you have {renderBalance(dapp.state.balance)} {dapp.state.tokenData?.symbol}
-				</h3>
-			</div>
-			<div>
-				{dapp.state.txBeingSent && <WaitingForTransactionMessage txHash={dapp.state.txBeingSent} />}
-				{dapp.state.transactionError && <TransactionErrorMessage message={dapp._getRpcErrorMessage(dapp.state.transactionError)} dismiss={() => dapp._dismissTransactionError()} />}
-			</div>
-			<div>
-				{dapp.state.writeContract && <textarea defaultValue={JSON.stringify(dapp.state.writeContract, null, " ")}></textarea>}
-				<WriteContract abi={TokenArtifact.abi} contract={dapp._contract as ethers.Contract} state={dapp.state} genericTransactionHandler={dapp._genericTransactionHandler(dapp)} />
-			</div>
-			<div>{dapp.state.balance?.eq(0) && <NoTokensMessage selectedAddress={dapp.state.selectedAddress} />}</div>
-		</main>
-	);
+	const state = dapp.state as InitialState;
+	let contractsUI = [] as any[];
+
+	console.trace(state.contracts);
+
+	for (const address in state.contracts) {
+		const abi = (state.deployment as typeof Deployment)[address].abi;
+		const contract = state.contracts[address];
+		contractsUI.push(
+			renderArtifactAsUserInterface({
+				abi,
+				contract,
+				state: state,
+				genericTransactionHandler: dapp._genericTransactionHandler(
+					address as DeploymentAddress,
+					dapp
+				),
+			})
+		);
+	}
+
+	// console.trace({ contractsUI, contracts: state.contracts });
+
+	return <div>{contractsUI}</div>;
+	// return [common(dapp), contractsUI];
 }
+
+// function common(dapp) {
+// 	return (
+// 		<main>
+// 			<div>
+// 				{state.transaction && (
+// 					<WaitingForTransactionMessage txHash={state.transaction} />
+// 				)}
+// 				{state.errors.transaction && (
+// 					<TransactionErrorMessage
+// 						message={dapp._getRpcErrorMessage(state.errors.transaction)}
+// 						dismiss={() => dapp._dismissTransactionError()}
+// 					/>
+// 				)}
+// 			</div>
+// 			<div>
+// 				{state.write && (
+// 					<textarea
+// 						defaultValue={JSON.stringify(state.write, null, " ")}
+// 					></textarea>
+// 				)}
+// 			</div>
+// 		</main>
+// 	);
+// }

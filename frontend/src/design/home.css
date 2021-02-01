@@ -1,5 +1,6 @@
 :root {
-  --transition: 0.0625s all ease-in-out;
+  /* --transition: 0.0625s all ease-in-out; */
+  --transition: none
 }
 
 input,
@@ -37,11 +38,12 @@ button:hover {
   /* transform: scale(0.99); */
   opacity: 1;
 }
-#methodUi {
+
+.methodUi {
   text-align: center;
 }
 
-#methodUi form {
+form.methodUi {
   min-height: 192px;
   background-color: #00000020;
   max-width: 703px;
@@ -51,15 +53,15 @@ button:hover {
   width: 320px;
 }
 
-#methodUi form ol {
+form.methodUi ol {
   position: relative;
   list-style: none;
   padding: 0;
 }
-#methodUi form ol li input {
+form.methodUi ol li input {
   width: calc(100% - 48px);
 }
-#methodUi form button {
+form.methodUi button {
   box-shadow: none;
   opacity: 0.25;
   font-size: 20px;
@@ -67,39 +69,39 @@ button:hover {
   /* word-break: break-all; */
 }
 
-#methodUi form {
+form.methodUi {
   position: relative;
   backdrop-filter: blur(var(--blur));
   --webkit-backdrop-filter: blur(var(--blur));
 }
-#methodUi form ol {
+form.methodUi ol {
   opacity: 0;
 }
-#methodUi form input {
+form.methodUi input {
   padding: 0;
 }
-#methodUi form ol {
+form.methodUi ol {
   min-height: 48px;
 }
 
-#methodUi form li {
+form.methodUi li {
   /* padding: 0; */
   /* height: 0; */
 }
 
-#methodUi form li {
+form.methodUi li {
   height: 48px;
   padding: 8px;
 }
 
-#methodUi form input {
+form.methodUi input {
   padding: 16px 24px;
 }
 
-#methodUi form:hover ol {
+form.methodUi:hover ol {
   opacity: 1;
 }
-#methodUi form button {
+form.methodUi button {
   position: absolute;
   left: 0;
   width: 100%;
@@ -108,7 +110,7 @@ button:hover {
   /* color: #fff; */
 }
 
-#methodUi form:hover button {
+form.methodUi:hover button {
   opacity: 0;
 }
 

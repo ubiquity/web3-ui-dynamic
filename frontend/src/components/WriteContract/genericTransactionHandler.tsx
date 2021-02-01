@@ -1,5 +1,5 @@
 import { BigNumber, ethers } from "ethers";
-import { ERROR_CODE_TX_REJECTED_BY_USER } from "../Dapp";
+const ERROR_CODE_TX_REJECTED_BY_USER = 4001;
 
 // CHECK ERC20 PROTOTYPE AND
 // "NUMBER TO UINT CONSIDERING DECIMALS NUMBERS"
@@ -10,7 +10,7 @@ import { ERROR_CODE_TX_REJECTED_BY_USER } from "../Dapp";
 
 // ONLY DO THIS ON WRITES
 
-const erc20Intercepts = [
+const erc20StandardConvertInts = [
 	"allowance",
 	"approve",
 	"balanceOf", // do not convert
@@ -28,26 +28,28 @@ const erc20Intercepts = [
 type Write = ethers.providers.TransactionResponse;
 type Read = ethers.BigNumber | string;
 
-export async function genericTransactionHandler(method: string, ...args: any[]) {
+export async function genericTransactionHandler(
+	contract: ethers.Contract,
+	method: string,
+	...args: any[]
+) {
+	this._dismissTransactionError();
+
+	if (erc20StandardConvertInts.includes(method)) {
+		const abi = this._protocol[contract.address].abi;
+		args = humanizeBigInts(abi, args);
+	}
+
+	const methodResponse = (await this._contract[method].apply(this, [
+		...args,
+	])) as Write & Read;
+
 	try {
-		this._dismissTransactionError();
-		let newArgs = [] as any[];
-		for (let index in args) {
-			newArgs = preprocessor(args, index, newArgs, method);
-		}
-
-		const methodResponse = (await this._contract[method].apply(this, [...newArgs])) as Write & Read;
-
-		// WRITING (SEND)
 		if ((methodResponse as Write).hash) {
-			this.setState({ txBeingSent: methodResponse.hash });
-			const receipt = await methodResponse.wait();
-			if (receipt.status === 0) {
-				throw new Error("Transaction failed");
-			}
-			return receipt; // convert to ether
-			// READING (CALL)
+			// WRITING ("SEND")
+			return await writingToChain(methodResponse); // convert to ether
 		} else {
+			// READING ("CALL")
 			return methodResponse.toString(); // convert to ether
 		}
 	} catch (error) {
@@ -55,30 +57,58 @@ export async function genericTransactionHandler(method: string, ...args: any[]) 
 			return;
 		}
 		console.error(error);
-		this.setState({ transactionError: error });
+		this.setState({ errors: { transaction: error } });
 		return error;
 	} finally {
-		this.setState({ txBeingSent: undefined });
+		this.setState({ transaction: null });
 	}
 }
 
-function preprocessor(args: any[], index: string, newArgs: any[], method: string) {
-	if (!erc20Intercepts.includes(method)) {
-		return newArgs;
+async function writingToChain(
+	methodResponse:
+		| (ethers.providers.TransactionResponse & string)
+		| (ethers.providers.TransactionResponse & BigNumber)
+) {
+	this.setState({ transaction: methodResponse.hash });
+	const receipt = await methodResponse.wait();
+	if (receipt.status === 0) {
+		throw new Error("Transaction failed");
 	}
+	return receipt;
+}
 
-	let arg = args[index];
-	// console.log(arg);
-	if (ethers.BigNumber.isBigNumber(arg)) {
-		newArgs[index] = parseInt(convertWeiToEth(arg)); // 1 => 0.0000000001
-		// parseInt(convertEthToWei(arg)) // 0.000001 => 1
-	} else {
-		newArgs[index] = arg;
-	}
-	console.log({ newArgs });
-	return newArgs;
+function humanizeBigInts(abi, args: any[]) {
+	// HUMANS PROBABLY DIDN'T MEAN
+	// 0000000000000000001
+	// AND PROBABLY MEANT
+	// 1
+
+	return args.map((arg: any) => {
+		if (ethers.BigNumber.isBigNumber(arg)) {
+			return parseInt(convertWeiToEth(arg));
+		} else {
+			return arg;
+		}
+	});
+}
+
+function robotizeBigInts(args: any[]) {
+	// ROBOTS PROBABLY MEAN
+	// 0000000000000000001
+	// NOT
+	// 1
+	return args.map((arg: any) => {
+		if (ethers.BigNumber.isBigNumber(arg)) {
+			return parseInt(convertEthToWei(arg));
+		} else {
+			return arg;
+		}
+	});
 }
 
 function convertWeiToEth(number: BigNumber) {
 	return ethers.utils.formatUnits(number, "wei");
+}
+function convertEthToWei(number: BigNumber) {
+	return ethers.utils.formatUnits(number, "eth");
 }

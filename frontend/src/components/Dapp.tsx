@@ -1,81 +1,118 @@
-import { BigNumberish, ethers } from "ethers";
+import { ethers } from "ethers";
 import React from "react";
-import protocol from "../contracts/protocol.json";
+import Deployment from "../@types/deployment.json"; // REFERENCE TYPING
 import { ConnectWallet } from "./ConnectWallet";
 import { Loading } from "./Loading";
 import { Main } from "./Main";
 import { NoWalletDetected } from "./NoWalletDetected";
 import { genericTransactionHandler } from "./WriteContract/genericTransactionHandler";
-
-const HARDHAT_NETWORK_ID = "31337";
-export const ERROR_CODE_TX_REJECTED_BY_USER = 4001;
 declare global {
 	interface Window {
 		ethereum: any;
 	}
 }
+const HARDHAT_NETWORK_ID = "31337";
+
+type _SKM1<T, K extends keyof T, V> = { [k in K]: V };
+type _SKM2<T, V> = _SKM1<T, keyof T, V>; // ALL KEYS
+type DeploymentContracts = Partial<_SKM2<typeof Deployment, ethers.Contract>>; // PARTIAL KEYS
+export type DeploymentAddress = keyof DeploymentContracts;
 
 export type InitialState = {
-	tokenData?: { name: string; symbol: string };
-	selectedAddress?: string;
-	balance?: any;
-	txBeingSent?: string;
-	transactionError?: string;
-	networkError?: string;
-	writeContract?: any;
-	readData?: { [key: string]: any }; // ASSOCIATED WITH EACH FORM ID
-	// TODO DYNAMIC TYPINGS GENERATION ITERATE THROUGH ARRAY OF FUNCTION NAMES
-	// type methods = TokenArtifact.abi.filter((e) => !!e.name);
+	userWalletAddress: string | null;
+	deployment: typeof Deployment | null; // ARTIFACTS WITH ABIs
+	contracts: DeploymentContracts | null; // ETHERS.CONTRACTS
+	// network: {
+	transaction: string | null;
+	write: any;
+	errors: {
+		transaction: string | null;
+		network: string | null;
+	};
+	// };
 };
 
-export const renderBalance = (_balance: BigNumberish) => {
-	const balance = ethers.utils.formatEther(_balance).toString();
-	return balance.substring(0, balance.indexOf(`.`) + 3);
-};
+// export const renderBalance = (_balance: BigNumberish) => {
+// 	const balance = ethers.utils.formatEther(_balance).toString();
+// 	return balance.substring(0, balance.indexOf(`.`) + 3);
+// };
 
-// interface Test2 extends ethers.Contract extends {balanceOf: any}
 export class Dapp extends React.Component {
 	state: InitialState;
-	_pollDataInterval?: NodeJS.Timeout;
 	_provider?: ethers.providers.Web3Provider;
-	_contract!: ethers.Contract;
 
 	constructor(props) {
 		super(props);
-		this.state = {};
+		this.state = {
+			userWalletAddress: null,
+			deployment: null, // ARTIFACTS WITH ABIs
+			contracts: null, // ETHERS.CONTRACTS
+			// network: {
+			write: null,
+			transaction: null,
+			errors: {
+				transaction: null,
+				network: null,
+			},
+			// },
+		};
 	}
 
 	render() {
+		// NO WEB3
 		if (window.ethereum === undefined) {
 			return <NoWalletDetected />;
 		}
 
-		if (!this.state.selectedAddress) {
-			return <ConnectWallet connectWallet={() => this._connectWallet()} networkError={this.state.networkError} dismiss={() => this._dismissNetworkError()} />;
+		// WALLET NOT CONNECTED
+		if (!this.state.userWalletAddress) {
+			return (
+				<ConnectWallet
+					connectWallet={() => this._connectWallet()}
+					networkError={this.state.errors.network}
+					dismiss={() => this._dismissNetworkError()}
+				/>
+			);
+		} else {
+			// console.trace(this);
+			return <Main dapp={this} />;
 		}
 
-		if (!this.state.tokenData || !this.state.balance) {
-			return <Loading />;
-		}
+		// if (!this.state.tokenData || !this.state.balance) {
+		// 	return <Loading />;
+		// }
+		// console.trace(this.state);
 
-		return <Main dapp={this} />;
+		// if (!this.state.deployment) {
+		// 	return <Loading />;
+		// }
 	}
 
-	componentWillUnmount() {
-		this._stopPollingData();
-	}
+	// componentWillUnmount() {
+	// 	this._stopPollingData();
+	// }
 
 	async _connectWallet() {
-		const [selectedAddress] = await window.ethereum.enable();
-
+		// console.trace();
+		const [userWalletAddress] = await window.ethereum.enable();
 		if (!this._checkNetwork()) {
 			return;
 		}
 
-		this._initialize(selectedAddress);
+		this.state.deployment = (await fetchRemoteDeployResults()) || Deployment;
+
+		this._initialize(userWalletAddress);
+
+		async function fetchRemoteDeployResults() {
+			const response = await fetch(
+				`https://gist.githubusercontent.com/kamiebisu/fc4299819fd6eee7cdcc9534bdb8be76/raw/3e65c40932c9d99e423a120327efe5f079fc86e1/deploy-results.json`
+			);
+			const parsed = (await response.json()) as typeof Deployment;
+			return parsed;
+		}
 
 		window.ethereum.on("accountsChanged", ([newAddress]) => {
-			this._stopPollingData();
+			// this._stopPollingData();
 
 			if (newAddress === undefined) {
 				return this._resetState();
@@ -85,69 +122,81 @@ export class Dapp extends React.Component {
 		});
 
 		window.ethereum.on("networkChanged", ([networkId]) => {
-			this._stopPollingData();
+			// this._stopPollingData();
 			this._resetState();
 		});
 	}
 
-	_initialize(userAddress) {
+	_initialize(userAddress: string) {
 		this.setState({
-			selectedAddress: userAddress,
+			userWalletAddress: userAddress,
 		});
 
 		this._intializeEthers();
-		this._getTokenData();
-		this._startPollingData();
+		// this._getTokenData();
+		// this._startPollingData();
 	}
 
 	async _intializeEthers() {
-		for (const address in protocol) {
-			const contract = protocol[address] as typeof import("../contracts/BondingShare.json");
-			console.log({ address, abi: contract.abi });
-			this._provider = new ethers.providers.Web3Provider(window.ethereum);
-			this._contract = new ethers.Contract(address, contract.abi, this._provider.getSigner());
+		this._provider = new ethers.providers.Web3Provider(window.ethereum);
+
+		// this.state.contracts = this.state.contracts || {};
+		this.state.contracts = {};
+
+		for (const address in this.state.deployment) {
+			const contract = this.state.deployment[
+				address
+			] as typeof import("../contracts/BondingShare.json"); // Artifact
+
+			this.state.contracts[address] = new ethers.Contract(
+				address,
+				contract.abi,
+				this._provider.getSigner()
+			);
 		}
 	}
 
-	_startPollingData() {
-		this._pollDataInterval = setInterval(() => {
-			this._updateBalance();
-			// console.log(`updating`);
-		}, 1000);
-		this._updateBalance();
-	}
+	// _startPollingData() {
+	// 	this._pollDataInterval = setInterval(() => {
+	// 		this._updateBalance();
+	// 		// console.log(`updating`);
+	// 	}, 1000);
+	// 	this._updateBalance();
+	// }
 
-	_stopPollingData() {
-		clearInterval((this._pollDataInterval as any) as number);
-		this._pollDataInterval = undefined;
-	}
-	async _getTokenData() {
-		const name = await this._contract?.name();
-		const symbol = await this._contract?.symbol();
-		this.setState({ tokenData: { name, symbol } });
-	}
+	// _stopPollingData() {
+	// 	clearInterval((this._pollDataInterval as any) as number);
+	// 	this._pollDataInterval = undefined;
+	// }
+	// async _getTokenData(tokenContractAddress: DeploymentAddress) {
+	// 	const name = await this.state.contracts[tokenContractAddress]?.name();
+	// 	const symbol = await this.state.contracts[tokenContractAddress]?.symbol();
+	// 	this.setState({ tokenData: { name, symbol } });
+	// }
 
-	async _updateBalance() {
-		const balance = await this._contract.balanceOf(this.state.selectedAddress);
-		// console.log(ethers.utils.formatEther(balance));
-		// debugger;
-		this.setState({ balance });
-	}
+	// async _updateBalance(tokenContractAddress: DeploymentAddress) {
+	// 	const balance = await this.state.contracts[tokenContractAddress]?.balanceOf(
+	// 		this.state.userWalletAddress
+	// 	);
+	// 	// console.log(ethers.utils.formatEther(balance));
+	// 	// debugger;
+	// 	this.setState({ balance });
+	// }
 
 	_dismissTransactionError() {
-		this.setState({ transactionError: undefined });
+		this.setState({ errors: { transaction: null } });
 	}
 
 	_dismissNetworkError() {
-		this.setState({ networkError: undefined });
+		this.setState({ errors: { network: null } });
 	}
 
 	_getRpcErrorMessage(error) {
 		if (error.data) {
 			return error.data.message;
+		} else {
+			return error.message;
 		}
-
-		return error.message;
 	}
 
 	_resetState() {
@@ -165,9 +214,24 @@ export class Dapp extends React.Component {
 
 		return false;
 	}
-	_genericTransactionHandler(dapp: Dapp): Function {
+	_genericTransactionHandler(
+		address: DeploymentAddress,
+		dapp: Dapp
+	): (method: any, ...args: any[]) => Promise<any> {
 		return async (method, ...args) => {
-			return await genericTransactionHandler.apply(dapp, [method, ...args]);
+			if (!this.state.contracts) {
+				throw new Error(`contracts not initialized in state`);
+			}
+			const selectedContract = this.state.contracts[address];
+			if (selectedContract) {
+				return await genericTransactionHandler.apply(dapp, [
+					selectedContract,
+					method,
+					...args,
+				]);
+			} else {
+				throw new Error(`Contract not found in deployment for ${address}`);
+			}
 		};
 	}
 }
