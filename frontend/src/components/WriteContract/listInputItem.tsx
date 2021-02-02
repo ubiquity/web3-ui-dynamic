@@ -18,7 +18,7 @@ export function listInputItem(param: { name: any; internalType: string }) {
 	);
 }
 
-function stopBubbling(event: React.MouseEvent<HTMLInputElement, MouseEvent>) {
-	console.log(`input`);
-	event.stopPropagation();
-}
+// function stopBubbling(event: React.MouseEvent<HTMLInputElement, MouseEvent>) {
+// 	console.log(`input`);
+// 	event.stopPropagation();
+// }

@@ -113,14 +113,14 @@ export class Dapp extends React.Component {
 			// this._stopPollingData();
 			this._resetState();
 		}
-		function accountsChangedHandler([newAddress]) {
+		async function accountsChangedHandler([newAddress]) {
 			// this._stopPollingData();
 
 			if (newAddress === undefined) {
 				return this._resetState();
 			}
 
-			this.loginUser(newAddress);
+			await this.loginUser(newAddress);
 		}
 	}
 

@@ -1,4 +1,10 @@
 import { BigNumber, ethers } from "ethers";
+import {
+	Dapp,
+	DeployedContracts,
+	DeploymentResponseFull,
+	DeploymentResponseSingle,
+} from "../Dapp";
 const ERROR_CODE_TX_REJECTED_BY_USER = 4001;
 
 // CHECK ERC20 PROTOTYPE AND
@@ -33,21 +39,32 @@ export async function genericTransactionHandler(
 	method: string,
 	...args: any[]
 ) {
-	this._dismissTransactionError();
+	const that = this as Dapp;
+	that._dismissTransactionError();
+	// @ts-ignore
+	console.log({ arguments });
+
+	const deploymentAll = that.state.deployment as DeploymentResponseFull;
+	const deploymentSingle = deploymentAll[
+		contract.address
+	] as DeploymentResponseSingle;
 
 	if (erc20StandardConvertInts.includes(method)) {
-		const abi = this._protocol[contract.address].abi;
+		const abi = deploymentSingle.abi;
 		args = humanizeBigInts(abi, args);
 	}
 
-	const methodResponse = (await this._contract[method].apply(this, [
+	const contractsAll = that.state.contracts as DeployedContracts;
+	const contractSingle = contractsAll[contract.address] as ethers.Contract;
+
+	const methodResponse = (await contractSingle[method].apply(this, [
 		...args,
 	])) as Write & Read;
 
 	try {
 		if ((methodResponse as Write).hash) {
 			// WRITING ("SEND")
-			return await writingToChain(methodResponse); // convert to ether
+			return await writingToChain(methodResponse, that); // convert to ether
 		} else {
 			// READING ("CALL")
 			return methodResponse.toString(); // convert to ether
@@ -57,19 +74,20 @@ export async function genericTransactionHandler(
 			return;
 		}
 		console.error(error);
-		this.setState({ errors: { transaction: error } });
+		that.setState({ errors: { transaction: error } });
 		return error;
 	} finally {
-		this.setState({ transaction: null });
+		that.setState({ transaction: null });
 	}
 }
 
 async function writingToChain(
 	methodResponse:
 		| (ethers.providers.TransactionResponse & string)
-		| (ethers.providers.TransactionResponse & BigNumber)
+		| (ethers.providers.TransactionResponse & BigNumber),
+	that: Dapp
 ) {
-	this.setState({ transaction: methodResponse.hash });
+	that.setState({ transaction: methodResponse.hash });
 	const receipt = await methodResponse.wait();
 	if (receipt.status === 0) {
 		throw new Error("Transaction failed");
