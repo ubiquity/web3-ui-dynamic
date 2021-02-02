@@ -7,6 +7,7 @@ export function listInputItem(param: { name: any; internalType: string }) {
 		<li key={param.name}>
 			<input
 				required
+				onClick={stopBubbling}
 				key={`${param.name}_${param.internalType}_`}
 				data-type={param.internalType}
 				type={param.internalType.includes(`int`) ? "number" : "text"}
@@ -14,4 +15,9 @@ export function listInputItem(param: { name: any; internalType: string }) {
 			/>
 		</li>
 	);
+}
+
+function stopBubbling(event: React.MouseEvent<HTMLInputElement, MouseEvent>) {
+	console.log(`input`);
+	event.stopPropagation();
 }

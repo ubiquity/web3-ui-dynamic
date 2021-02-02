@@ -2,7 +2,7 @@ import React from "react";
 import {
 	DeployedContractAddress,
 	DeploymentResponseSingle,
-	InitialState,
+	InitialState
 } from "../Dapp";
 import { listInputItem as inputItem } from "./listInputItem";
 import { renderContractMethod } from "./renderMethodForm";
@@ -18,6 +18,7 @@ export function renderContract({
 	state,
 	transactionHandler,
 }: Params) {
+
 	const attributes = {
 		className: "contract",
 		id: singleDeploymentAddress,

@@ -78,7 +78,7 @@ export class Dapp extends React.Component {
 				/>
 			);
 		} else {
-			console.log(this.state);
+			// console.log(this.state);
 			return <Main dapp={this} />;
 		}
 

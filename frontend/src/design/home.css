@@ -50,8 +50,19 @@ button:hover {
 	text-align: center;
 }
 
-.contract > form {
+.contract > form > ol {
+	display: none;
+}
+.contract > form.open > ol {
+	display: initial;
+}
+
+.contract > form.open {
 	min-height: 192px;
+}
+
+.contract > form {
+	min-height: 52px;
 	background-color: #00000020;
 	max-width: 703px;
 	display: inline-block;
@@ -69,14 +80,20 @@ button:hover {
 	width: calc(100% - 48px);
 }
 .contract > form button {
+	pointer-events: none;
 	box-shadow: none;
 	opacity: 0.25;
 	font-size: 20px;
 	background-color: transparent;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	/* text-overflow: ellipsis; */
+	/* overflow: hidden; */
 	/* word-break: break-all; */
 }
 
-.contract > form {
+.contract > form.react-draggable-dragged {
 	position: relative;
 	backdrop-filter: blur(var(--blur));
 	--webkit-backdrop-filter: blur(var(--blur));
@@ -118,7 +135,7 @@ button:hover {
 }
 
 .contract > form:hover button {
-	opacity: 0;
+	opacity: 0.125;
 }
 
 textarea {

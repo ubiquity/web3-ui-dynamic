@@ -25,6 +25,7 @@ export function renderContractMethod({
 			<form
 				id={method.name}
 				// className="methodUi"
+				onClick={openMethod}
 				onSubmit={submitHandlerCurry({
 					state,
 					method,
@@ -33,8 +34,16 @@ export function renderContractMethod({
 			>
 				<button>{titleCase(sentenceCase(method.name))}</button>
 				<ol>{buffer}</ol>
-				<textarea id={`${address}-${method.name}`}></textarea>
+				{/* <textarea id={`${address}-${method.name}`}></textarea> */}
 			</form>
 		</Draggable>
 	);
+}
+
+function openMethod(event: React.MouseEvent<HTMLFormElement, MouseEvent>) {
+	const form = event.target as HTMLFormElement;
+	console.log(`form`);
+	form.classList.toggle(`open`);
+	event.stopPropagation();
+	// console.log();
 }
