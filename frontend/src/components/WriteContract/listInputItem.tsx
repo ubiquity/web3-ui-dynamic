@@ -6,8 +6,9 @@ export function listInputItem(param: { name: any; internalType: string }) {
 	return (
 		<li key={param.name}>
 			<input
+				onMouseDown={(e) => e.stopPropagation()}
 				required
-				onClick={stopBubbling}
+				// onClick={stopBubbling}
 				key={`${param.name}_${param.internalType}_`}
 				data-type={param.internalType}
 				type={param.internalType.includes(`int`) ? "number" : "text"}
