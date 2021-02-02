@@ -1,41 +1,38 @@
 import React from "react";
 import Deployment from "../@types/deployment.json"; // REFERENCE TYPING
-import { Dapp, DeploymentAddress, InitialState } from "./Dapp";
-import { renderArtifactAsUserInterface } from "./WriteContract/renderArtifactAsUserInterface";
+import {
+	Dapp,
+	DeployedContractAddress,
+	DeploymentResponseSingle,
+	InitialState,
+} from "./Dapp";
+import { renderContract } from "./WriteContract/renderArtifactAsUserInterface";
 
 export function Main({ dapp }: { dapp: Dapp }) {
 	const state = dapp.state as InitialState;
-	let contractsUI = [] as any[];
+	const protocolUi = [] as (JSX.Element | JSX.Element[])[];
 
 	if (!state.contracts) {
 		throw new Error("no state.contracts");
-		// console.log(state);
-		// debugger;
 	}
-	//  else {
-	// debugger;
-	// }
 
-	for (const address in state.contracts) {
-		const abi = (state.deployment as typeof Deployment)[address].abi;
-		const contract = state.contracts[address];
-		contractsUI.push(
-			renderArtifactAsUserInterface({
-				abi,
-				contract,
-				state: state,
-				genericTransactionHandler: dapp._genericTransactionHandler(
-					address as DeploymentAddress,
-					dapp
-				),
+	for (const singleDeploymentAddress in state.deployment) {
+		const address = singleDeploymentAddress as DeployedContractAddress;
+		const singleDeployment = (state.deployment as typeof Deployment)[
+			address
+		] as DeploymentResponseSingle;
+
+		protocolUi.push(
+			renderContract({
+				singleDeploymentAbi: singleDeployment.abi,
+				singleDeploymentAddress: address,
+				state,
+				transactionHandler: dapp.transactionHandler(address, dapp),
 			})
 		);
 	}
 
-	// console.log({ contractsUI, contracts: state.contracts });
-
-	return <div>{contractsUI}</div>;
-	// return [common(dapp), contractsUI];
+	return <div>{protocolUi}</div>;
 }
 
 // function common(dapp) {

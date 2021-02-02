@@ -1,11 +1,22 @@
 import { ethers } from "ethers";
 import React from "react";
-import Deployment from "../@types/deployment.json"; // REFERENCE TYPING
+import ExampleFullDeployment from "../@types/deployment.json"; // REFERENCE TYPING
 import { ConnectWallet } from "./ConnectWallet";
-import { Loading } from "./Loading";
 import { Main } from "./Main";
 import { NoWalletDetected } from "./NoWalletDetected";
 import { genericTransactionHandler } from "./WriteContract/genericTransactionHandler";
+
+type DeploymentResponseFullType = typeof ExampleFullDeployment;
+type DeploymentResponseSingleType = DeploymentResponseFull["0x083a8295B9cBC4772beabCb8aEB71DE0E3ca3569"]; // JUST GRAB ONE
+export interface DeploymentResponseFull
+	extends DeploymentResponseFullType,
+		Object {}
+export interface DeploymentResponseSingle
+	extends DeploymentResponseSingleType,
+		Object {}
+
+type DeployedArtifact = typeof import("../contracts/BondingShare.json"); // Artifact
+
 declare global {
 	interface Window {
 		ethereum: any;
@@ -13,18 +24,18 @@ declare global {
 }
 const HARDHAT_NETWORK_ID = "31337";
 
-type Artifact = typeof import("../contracts/BondingShare.json"); // Artifact
-
 type _SKM1<T, K extends keyof T, V> = { [k in K]: V };
 type _SKM2<T, V> = _SKM1<T, keyof T, V>; // ALL KEYS
-type DeploymentContracts = Partial<_SKM2<typeof Deployment, ethers.Contract>>; // PARTIAL KEYS
-export type DeploymentAddress = keyof DeploymentContracts;
+export type DeployedContracts = Partial<
+	_SKM2<DeploymentResponseFull, ethers.Contract>
+>; // PARTIAL KEYS
+export type DeployedContractAddress = keyof DeployedContracts;
 
 export type InitialState = {
 	provider: ethers.providers.Web3Provider | null;
 	userWalletAddress: string | null;
-	deployment: typeof Deployment | null; // ARTIFACTS WITH ABIs
-	contracts: DeploymentContracts | null; // ETHERS.CONTRACTS
+	deployment: DeploymentResponseFull | null; // ARTIFACTS WITH ABIs
+	contracts: DeployedContracts | null; // ETHERS.CONTRACTS
 	transaction: string | null;
 	write: any;
 	errors: {
@@ -117,7 +128,7 @@ export class Dapp extends React.Component {
 		const response = await fetch(
 			`https://gist.githubusercontent.com/kamiebisu/fc4299819fd6eee7cdcc9534bdb8be76/raw/3e65c40932c9d99e423a120327efe5f079fc86e1/deploy-results.json`
 		);
-		const parsed = (await response.json()) as typeof Deployment;
+		const parsed = (await response.json()) as DeploymentResponseFull;
 		return parsed;
 	}
 
@@ -128,7 +139,7 @@ export class Dapp extends React.Component {
 	}
 
 	async _intializeEthers(
-		deployment: typeof Deployment,
+		deployment: DeploymentResponseFull,
 		userWalletAddress: string
 	) {
 		const stateInitialization = {
@@ -139,10 +150,9 @@ export class Dapp extends React.Component {
 		};
 
 		for (const address in deployment) {
-			const contract = deployment[address] as Artifact;
 			stateInitialization.contracts[address] = new ethers.Contract(
 				address,
-				contract.abi,
+				(deployment[address] as DeployedArtifact).abi,
 				stateInitialization.provider.getSigner()
 			);
 		}
@@ -208,8 +218,8 @@ export class Dapp extends React.Component {
 
 		return false;
 	}
-	_genericTransactionHandler(
-		address: DeploymentAddress,
+	transactionHandler(
+		address: DeployedContractAddress,
 		dapp: Dapp
 	): (method: any, ...args: any[]) => Promise<any> {
 		return async (method, ...args) => {

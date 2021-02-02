@@ -1,41 +1,82 @@
-import { listInputItem } from "./listInputItem";
-import { renderMethodForm } from "./renderMethodForm";
-
-export function renderArtifactAsUserInterface({
-	abi,
-	contract,
+import React from "react";
+import {
+	DeployedContractAddress,
+	DeploymentResponseSingle,
+	InitialState,
+} from "../Dapp";
+import { listInputItem as inputItem } from "./listInputItem";
+import { renderContractMethod } from "./renderMethodForm";
+interface Params {
+	singleDeploymentAbi: DeploymentResponseSingle["abi"];
+	singleDeploymentAddress: DeployedContractAddress;
+	state: InitialState;
+	transactionHandler: Function;
+}
+export function renderContract({
+	singleDeploymentAbi,
+	singleDeploymentAddress,
 	state,
-	genericTransactionHandler,
-}) {
-	const abiMapped = abi
-		.map(_mapping(contract, state, genericTransactionHandler))
-		.filter(Boolean);
-	console.log(abiMapped);
-	return abiMapped;
+	transactionHandler,
+}: Params) {
+	const attributes = {
+		className: "contract",
+		id: singleDeploymentAddress,
+		key: singleDeploymentAddress,
+	};
+
+	return (
+		<div {...attributes}>
+			{
+				singleDeploymentAbi
+					.map(
+						_mapping({
+							state,
+							transactionHandler,
+							address: singleDeploymentAddress,
+						})
+					)
+					.filter(Boolean) as JSX.Element[]
+			}
+		</div>
+	);
 }
 
-function _mapping(contract, state, genericTransactionHandler) {
-	return function mapping(method) {
-		if (method.type !== "function") {
-			return false;
+export interface Method {
+	type: string;
+	inputs: any;
+	name: string;
+}
+interface MappingParams {
+	state: InitialState;
+	transactionHandler: Function;
+	address: DeployedContractAddress;
+}
+
+function _mapping({ state, transactionHandler, address }: MappingParams) {
+	return function mapping(
+		contractMethod: Method | any
+	): JSX.Element | undefined {
+		if (contractMethod?.type !== "function") {
+			return;
 		}
 
-		const buffer = [] as JSX.Element[];
+		const contractMethodInputRender = [] as JSX.Element[];
 
-		for (const param of method.inputs) {
-			buffer.push(listInputItem(param));
+		for (const param of contractMethod.inputs) {
+			contractMethodInputRender.push(inputItem(param));
 		}
 
-		if (buffer.length) {
-			return renderMethodForm({
-				method,
-				buffer,
-				contract,
+		if (contractMethodInputRender.length) {
+			return renderContractMethod({
+				address,
+				method: contractMethod,
+				buffer: contractMethodInputRender,
 				state,
-				genericTransactionHandler,
+				transactionHandler,
 			});
-		} else {
-			return false;
 		}
+		// else {
+		// 	return false;
+		// }
 	};
 }

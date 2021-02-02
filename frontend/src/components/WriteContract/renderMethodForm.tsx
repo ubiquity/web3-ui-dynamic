@@ -4,29 +4,36 @@ import { submitHandlerCurry } from "./submitHandlerCurry";
 
 import { sentenceCase } from "change-case";
 import { titleCase } from "title-case";
-
-export function renderMethodForm({
+import { InitialState } from "../Dapp";
+import { Method } from "./renderArtifactAsUserInterface";
+interface RenderContractMethodParams {
+	address: string;
+	method: Method;
+	buffer: JSX.Element[];
+	state: InitialState;
+	transactionHandler: Function;
+}
+export function renderContractMethod({
+	address,
 	method,
 	buffer,
-	contract,
 	state,
-	genericTransactionHandler,
-}) {
+	transactionHandler,
+}: RenderContractMethodParams) {
 	return (
 		<Draggable key={method.name}>
 			<form
 				id={method.name}
-				className="methodUi"
+				// className="methodUi"
 				onSubmit={submitHandlerCurry({
 					state,
-					contract,
 					method,
-					genericTransactionHandler,
+					transactionHandler,
 				})}
 			>
 				<button>{titleCase(sentenceCase(method.name))}</button>
 				<ol>{buffer}</ol>
-				<textarea></textarea>
+				<textarea id={`${address}-${method.name}`}></textarea>
 			</form>
 		</Draggable>
 	);
