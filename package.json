@@ -3,13 +3,13 @@
     "scripts": {
         "dev": "yarn run-p run:blockchain build:watch run:ui",
         "_________": "",
-        "postinstall": "ln -s ./blockchain/hardhat.config.ts ./ && ln -s ./blockchain/tsconfig.json ./",
+        "postinstall": "rm ./hardhat.config.ts && ln -s ./blockchain/hardhat.config.ts ./ && rm ./tsconfig.json && ln -s ./blockchain/tsconfig.json ./",
         "start": "yarn run-p build:deploy run:ui",
         "prestart": "yarn run:blockchain &",
         "prebuild": "yarn lint",
         "build": "yarn hardhat compile",
         "build:deploy": "yarn hardhat --network localhost run blockchain/scripts/deploy-entry.ts",
-        "build:watch": "nodemon --exec 'yarn build:deploy'",
+        "build:watch": "yarn nodemon --exec 'yarn build:deploy'",
         "run:blockchain": "yarn hardhat node",
         "lint": "shopt -s extglob && yarn prettier '?(tasks|scripts|test|frontend)/**/*' --write --ignore-unknown",
         "run:ui": "cd ./frontend/ && yarn && yarn start && open localhost:8888",
@@ -23,15 +23,17 @@
         "typescript": "^4.1.2"
     },
     "dependencies": {
+        "@nomiclabs/hardhat-ethers": "^2.0.1",
+        "@nomiclabs/hardhat-waffle": "^2.0.0",
         "@openzeppelin/contracts": "3.3.0-solc-0.7",
         "@uniswap/lib": "^4.0.1-alpha",
         "@uniswap/v2-periphery": "^1.1.0-beta.0",
-        "@nomiclabs/hardhat-ethers": "^2.0.1",
-        "@nomiclabs/hardhat-waffle": "^2.0.0",
+        "dotenv": "^8.2.0",
         "ethereum-waffle": "^3.2.1",
         "ethers": "^5.0.23",
         "hardhat": "^2.0.4",
         "hardhat-deploy": "^0.7.0-beta.44",
-        "hardhat-deploy-ethers": "^0.3.0-beta.7"
+        "hardhat-deploy-ethers": "^0.3.0-beta.7",
+        "nodemon": "^2.0.7"
     }
 }
