@@ -5,13 +5,13 @@ import "hardhat-deploy-ethers";
 import { task } from "hardhat/config";
 import fsp from "fs-extra-promise";
 
-dotenv.config();
+dotenv.config({ path: "../.env" });
 
 dynamicallyCheckAllEnvVars();
 
 // TODO this only checks this file.
 // TODO update .env.example dynamically
-async function dynamicallyCheckAllEnvVars() {
+function dynamicallyCheckAllEnvVars() {
 	const file = fsp.readFileSync(__filename, "utf8");
 	const process_envs = file.match(/process\.env\.([A-Z]|_)+/gim);
 	const results = process_envs.values();

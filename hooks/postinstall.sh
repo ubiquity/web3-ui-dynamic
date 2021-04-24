@@ -1,9 +1,7 @@
 #!/bin/bash
 
-rm ./hardhat.config.ts
-ln -s ./blockchain/hardhat.config.ts ./
-
-rm ./tsconfig.json
-ln -s ./blockchain/tsconfig.json ./
+cd ./blockchain/ || echo "ERROR: ./blockchain/ doesn't exist?"
+yarn
+yarn build
 
 echo "post install complete"
