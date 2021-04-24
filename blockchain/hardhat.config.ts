@@ -3,8 +3,40 @@ import * as dotenv from "dotenv";
 import "hardhat-deploy";
 import "hardhat-deploy-ethers";
 import { task } from "hardhat/config";
+import fsp from "fs-extra-promise";
 
 dotenv.config();
+
+dynamicallyCheckAllEnvVars();
+
+// TODO this only checks this file.
+async function dynamicallyCheckAllEnvVars() {
+	const file = fsp.readFileSync(__filename, "utf8");
+	const process_envs = file.match(/process\.env\.([A-Z]|_)+/gim);
+	const results = process_envs.values();
+
+	const rawKeys = [] as string[];
+	for (const result of results) {
+		rawKeys.push(result.split(`process.env.`).pop());
+	}
+
+	function onlyUnique(value, index, self) {
+		return self.indexOf(value) === index;
+	}
+
+	const uniqueKeys = rawKeys.filter(onlyUnique);
+	const processEnvKeys = Object.keys(process.env);
+	const errors = [] as string[];
+	for (const uniqueKey of uniqueKeys) {
+		if (!processEnvKeys.includes(uniqueKey)) {
+			errors.push(`unset required environment variable ${uniqueKey}`);
+		}
+	}
+	if (errors.length) {
+		console.error(`Error: check .env!`);
+		throw new Error(errors.toString());
+	}
+}
 
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
@@ -42,11 +74,11 @@ export default {
 			},
 			accounts: [
 				{
-					privateKey: process.env.TREASURY_PRIV_KEY || "0",
+					privateKey: process.env.TREASURY_PRIV_KEY,
 					balance: "10000000000000000000000",
 				},
 				{
-					privateKey: process.env.SECOND_ACC_PRIV_KEY || "f",
+					privateKey: process.env.SECOND_ACC_PRIV_KEY,
 					balance: "10000000000000000000000",
 				},
 			],

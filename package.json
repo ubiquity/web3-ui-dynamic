@@ -2,9 +2,10 @@
     "license": "MIT",
     "scripts": {
         "dev": "yarn run-p run:blockchain build:watch run:ui",
+        "dev:watch": " yarn nodemon --exec 'yarn dev' --watch **/*.ts",
         "_________": "",
         "postinstall": "rm ./hardhat.config.ts && ln -s ./blockchain/hardhat.config.ts ./ && rm ./tsconfig.json && ln -s ./blockchain/tsconfig.json ./",
-        "start": "yarn run-p build:deploy run:ui",
+        "start": "yarn run-s build:deploy run:ui",
         "prestart": "yarn run:blockchain &",
         "prebuild": "yarn lint",
         "build": "yarn hardhat compile",
@@ -16,6 +17,7 @@
         "run:test": "yarn hardhat test"
     },
     "devDependencies": {
+        "@types/fs-extra-promise": "^1.0.9",
         "npm-run-all": "^4.1.5",
         "prettier": "^2.2.1",
         "run-p": "^0.0.0",
@@ -31,6 +33,7 @@
         "dotenv": "^8.2.0",
         "ethereum-waffle": "^3.2.1",
         "ethers": "^5.0.23",
+        "fs-extra-promise": "^1.0.1",
         "hardhat": "^2.0.4",
         "hardhat-deploy": "^0.7.0-beta.44",
         "hardhat-deploy-ethers": "^0.3.0-beta.7",
