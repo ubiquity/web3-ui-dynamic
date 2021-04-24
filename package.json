@@ -1,17 +1,17 @@
 {
     "license": "MIT",
     "scripts": {
-        "dev": "yarn run-p run:blockchain build:watch run:ui",
-        "dev:watch": " yarn nodemon --exec 'yarn dev' --watch **/*.ts",
-        "_________": "",
-        "postinstall": "rm ./hardhat.config.ts && ln -s ./blockchain/hardhat.config.ts ./ && rm ./tsconfig.json && ln -s ./blockchain/tsconfig.json ./",
-        "start": "yarn run-s build:deploy run:ui",
         "prestart": "yarn run:blockchain &",
+        "start": "yarn run-s build build:deploy run:ui",
+        "_________": "",
+        "dev": " yarn nodemon --exec 'build:deploy' --watch **/*.ts",
+        "postinstall": "./hooks/postinstall.sh",
         "prebuild": "yarn lint",
         "build": "yarn hardhat compile",
         "build:deploy": "yarn hardhat --network localhost run blockchain/scripts/deploy-entry.ts",
         "build:watch": "yarn nodemon --exec 'yarn build:deploy'",
         "run:blockchain": "yarn hardhat node",
+        "kill:blockchain": "kill $(lsof -t -i:8545)",
         "lint": "shopt -s extglob && yarn prettier '?(tasks|scripts|test|frontend)/**/*' --write --ignore-unknown",
         "run:ui": "cd ./frontend/ && yarn && yarn start && open localhost:8888",
         "run:test": "yarn hardhat test"

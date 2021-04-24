@@ -10,6 +10,7 @@ dotenv.config();
 dynamicallyCheckAllEnvVars();
 
 // TODO this only checks this file.
+// TODO update .env.example dynamically
 async function dynamicallyCheckAllEnvVars() {
 	const file = fsp.readFileSync(__filename, "utf8");
 	const process_envs = file.match(/process\.env\.([A-Z]|_)+/gim);
