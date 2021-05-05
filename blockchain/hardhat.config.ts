@@ -11,14 +11,20 @@ dynamicallyCheckAllEnvVars();
 
 // TODO this only checks this file.
 // TODO update .env.example dynamically
+
 function dynamicallyCheckAllEnvVars() {
 	const file = fsp.readFileSync(__filename, "utf8");
 	const process_envs = file.match(/process\.env\.([A-Z]|_)+/gim);
-	const results = process_envs.values();
+	const results = process_envs?.values();
+
+	if (!results) throw new Error(`no results`);
 
 	const rawKeys = [] as string[];
 	for (const result of results) {
-		rawKeys.push(result.split(`process.env.`).pop());
+		const key = result.split(`process.env.`).pop();
+		if (key) {
+			rawKeys.push(key);
+		}
 	}
 
 	function onlyUnique(value, index, self) {

@@ -13,7 +13,8 @@ async function main(hre: HardhatRuntimeEnvironment) {
 	let protocolData = {};
 	const deployedContracts = await deployer();
 	for (const { contractName, contractAddress } of deployedContracts) {
-		const contractArtifact = JSON.parse((await fs.promises.readFile(`./blockchain/artifacts/contracts/${contractName}.sol/${contractName}.json`)).toString());
+		const jsonFileName = `./blockchain/artifacts/contracts/${contractName}.sol/${contractName}.json`;
+		const contractArtifact = JSON.parse((await fs.promises.readFile(jsonFileName)).toString());
 		protocolData[contractAddress] = contractArtifact;
 	}
 	await fs.promises.writeFile("./deploy-results.json", JSON.stringify(protocolData));

@@ -15,7 +15,7 @@ export interface DeploymentResponseSingle
 	extends DeploymentResponseSingleType,
 		Object {}
 
-type DeployedArtifact = typeof import("../contracts/BondingShare.json"); // Artifact
+		type DeployedArtifact = typeof import("../../../blockchain/artifacts/contracts/BondingShare.sol/BondingShare.json"); // Artifact
 
 declare global {
 	interface Window {

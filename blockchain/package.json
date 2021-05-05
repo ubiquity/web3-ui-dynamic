@@ -14,12 +14,13 @@
         "_build:watch2": "yarn nodemon --exec 'yarn run-s build build:deploy' --watch ./package.json",
         "build:clean": "yarn hardhat clean",
         "run:blockchain": "yarn hardhat node",
+        "run:blockchain:daemonize": "yarn hardhat node &",
         "run:prettier": "shopt -s extglob && yarn prettier '?(tasks|scripts|test|frontend)/**/*' --write --ignore-unknown",
         "run:test": "yarn hardhat test"
     },
     "devDependencies": {
         "@nomiclabs/hardhat-ethers": "^2.0.1",
-        "@nomiclabs/hardhat-waffle": "^2.0.0",
+        "@nomiclabs/hardhat-waffle": "^2.0.1",
         "@types/chai": "^4.2.14",
         "@types/mocha": "^8.0.4",
         "@types/node": "^14.14.10",
@@ -43,5 +44,18 @@
         "hardhat-deploy": "^0.7.0-beta.44",
         "hardhat-deploy-ethers": "^0.3.0-beta.7",
         "nodemon": "^2.0.7"
+    },
+    "nodemonConfig": {
+        "ignore": [
+            "**/*/cache/",
+            "**/*/artifacts/",
+            "**/*/node_modules/**/*"
+        ],
+        "events": {
+            "config": "exit",
+            "exit": "",
+            "restart": "clear && printf '\\033[3J'",
+            "start": "yarn build:clean && clear && printf '\\033[3J'"
+        }
     }
 }

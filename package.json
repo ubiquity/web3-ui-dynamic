@@ -4,11 +4,26 @@
         "preinstall": "chmod +x ./hooks/postinstall.sh",
         "install": "",
         "postinstall": "./hooks/postinstall.sh",
-        "prestart": "cd ./blockchain/ && yarn start",
+        "_": "",
+        "prestart": "cd ./blockchain/ && yarn run-s run:blockchain:daemonize build:deploy",
         "start": "cd ./frontend/ && yarn start"
     },
     "devDependencies": {
         "npm-run-all": "^4.1.5",
         "nodemon": "^2.0.7"
+    },
+    "nodemonConfig": {
+        "ignore": [
+            "**/*/cache/",
+            "**/*/artifacts/",
+            "**/*/frontend/",
+            "**/*/node_modules/**/*"
+        ],
+        "events": {
+            "config": "exit",
+            "exit": "",
+            "restart": "clear && printf '\\033[3J'",
+            "start": "clear && printf '\\033[3J'"
+        }
     }
 }
