@@ -14,7 +14,7 @@
         "_build:watch2": "yarn nodemon --exec 'yarn run-s build build:deploy' --watch ./package.json",
         "build:clean": "yarn hardhat clean",
         "run:blockchain": "yarn hardhat node",
-        "run:blockchain:daemonize": "yarn hardhat node &",
+        "run:blockchain:daemonize": "kill $(lsof -t -i:8545) && yarn hardhat node &",
         "run:prettier": "shopt -s extglob && yarn prettier '?(tasks|scripts|test|frontend)/**/*' --write --ignore-unknown",
         "run:test": "yarn hardhat test"
     },
