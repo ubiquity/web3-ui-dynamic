@@ -4,6 +4,7 @@ import fs from "fs";
 // import { DeployFunction } from "hardhat-deploy/types";
 import hre, { network } from "hardhat";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
+import path from "path";
 import { deployer } from "./deployer";
 
 async function main(hre: HardhatRuntimeEnvironment) {
@@ -13,7 +14,8 @@ async function main(hre: HardhatRuntimeEnvironment) {
 	let protocolData = {};
 	const deployedContracts = await deployer();
 	for (const { contractName, contractAddress } of deployedContracts) {
-		const jsonFileName = `./blockchain/artifacts/contracts/${contractName}.sol/${contractName}.json`;
+		const jsonFileName = path.join(`artifacts`, `contracts`, `${contractName}.sol`, `${contractName}.json`);
+		console.log({ jsonFileName, cwd: process.cwd() });
 		const contractArtifact = JSON.parse((await fs.promises.readFile(jsonFileName)).toString());
 		protocolData[contractAddress] = contractArtifact;
 	}
