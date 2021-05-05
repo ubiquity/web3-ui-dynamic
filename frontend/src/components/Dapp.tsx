@@ -22,7 +22,7 @@ declare global {
 		ethereum: any;
 	}
 }
-const HARDHAT_NETWORK_ID = "31337";
+const HARDHAT_NETWORK_ID = "1337";
 
 type _SKM1<T, K extends keyof T, V> = { [k in K]: V };
 type _SKM2<T, V> = _SKM1<T, keyof T, V>; // ALL KEYS

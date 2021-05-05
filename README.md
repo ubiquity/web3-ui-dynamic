@@ -1,6 +1,7 @@
 # dynamic-uad-ui
 
-You need to create `.env` file. Copy `.env.example` and fill out those required keys to compile the smart contract code.
+You need to create `.env` file.
 
-yarn
-yarn start
+Copy `.env.example` and fill out those required keys to compile the smart contract code.
+
+yarn && yarn start
