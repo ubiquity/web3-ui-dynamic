@@ -7,7 +7,7 @@ import { NoWalletDetected } from "./NoWalletDetected";
 import { genericTransactionHandler } from "./WriteContract/genericTransactionHandler";
 
 type DeploymentResponseFullType = typeof ExampleFullDeployment;
-type DeploymentResponseSingleType = DeploymentResponseFull["0x083a8295B9cBC4772beabCb8aEB71DE0E3ca3569"]; // JUST GRAB ONE
+type DeploymentResponseSingleType = DeploymentResponseFull["0x083a8295B9cBC4772beabCb8aEB71DE0E3ca3569"]; // JUST GRAB ONE // JUST REFERENCE TYPINGS
 export interface DeploymentResponseFull
 	extends DeploymentResponseFullType,
 		Object {}
@@ -15,7 +15,7 @@ export interface DeploymentResponseSingle
 	extends DeploymentResponseSingleType,
 		Object {}
 
-		type DeployedArtifact = typeof import("../../../blockchain/artifacts/contracts/BondingShare.sol/BondingShare.json"); // Artifact
+type DeployedArtifact = typeof import("../../../blockchain/artifacts/contracts/BondingShare.sol/BondingShare.json"); // Artifact
 
 declare global {
 	interface Window {
