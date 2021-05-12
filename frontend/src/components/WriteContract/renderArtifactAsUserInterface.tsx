@@ -1,27 +1,27 @@
 import React from "react";
 import {
-	DeployedContractAddress,
-	DeploymentResponseSingle,
+	DeployedContractName,
+	SingleDeploymentType,
 	InitialState,
 } from "../Dapp";
 import { listInputItem as inputItem } from "./listInputItem";
 import { renderContractMethod } from "./renderMethodForm";
 interface Params {
-	singleDeploymentAbi: DeploymentResponseSingle["abi"];
-	singleDeploymentAddress: DeployedContractAddress;
+	singleDeploymentAbi: SingleDeploymentType["abi"];
+	singleDeploymentName: DeployedContractName;
 	state: InitialState;
 	transactionHandler: Function;
 }
 export function renderContract({
 	singleDeploymentAbi,
-	singleDeploymentAddress,
+	singleDeploymentName,
 	state,
 	transactionHandler,
 }: Params) {
 	const attributes = {
 		className: "contract",
-		id: singleDeploymentAddress,
-		key: singleDeploymentAddress,
+		id: singleDeploymentName,
+		key: singleDeploymentName,
 	};
 
 	return (
@@ -32,7 +32,7 @@ export function renderContract({
 						_mapping({
 							state,
 							transactionHandler,
-							address: singleDeploymentAddress,
+							address: singleDeploymentName,
 						})
 					)
 					.filter(Boolean) as JSX.Element[]
@@ -49,7 +49,7 @@ export interface Method {
 interface MappingParams {
 	state: InitialState;
 	transactionHandler: Function;
-	address: DeployedContractAddress;
+	address: DeployedContractName;
 }
 
 function _mapping({ state, transactionHandler, address }: MappingParams) {

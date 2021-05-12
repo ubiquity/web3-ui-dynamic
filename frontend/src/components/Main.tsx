@@ -1,9 +1,9 @@
 import React from "react";
-import Deployment from "../@types/deployment.json"; // REFERENCE TYPING
+// import Deployment from "../@types/deployment.json"; // REFERENCE TYPING
 import {
 	Dapp,
-	DeployedContractAddress,
-	DeploymentResponseSingle,
+	DeployedContractName,
+	SingleDeploymentType,
 	InitialState,
 } from "./Dapp";
 import { renderContract } from "./WriteContract/renderArtifactAsUserInterface";
@@ -16,16 +16,19 @@ export function Main({ dapp }: { dapp: Dapp }) {
 		throw new Error("no state.contracts");
 	}
 
-	for (const singleDeploymentAddress in state.deployment) {
-		const address = singleDeploymentAddress as DeployedContractAddress;
-		const singleDeployment = (state.deployment as typeof Deployment)[
-			address
-		] as DeploymentResponseSingle;
+	for (const singleDeploymentName in state.deployment?.contracts) {
+		const singleDeployment: SingleDeploymentType =
+			state.deployment?.contracts[singleDeploymentName];
+
+		const address = singleDeployment.address as DeployedContractName;
+		// const singleDeployment = (state.deployment as typeof Deployment)[
+		// 	address
+		// ] as SingleDeploymentType;
 
 		protocolUi.push(
 			renderContract({
 				singleDeploymentAbi: singleDeployment.abi,
-				singleDeploymentAddress: address,
+				singleDeploymentName: address,
 				state,
 				transactionHandler: dapp.transactionHandler(address, dapp),
 			})

@@ -2,8 +2,8 @@ import { BigNumber, ethers } from "ethers";
 import {
 	Dapp,
 	DeployedContracts,
-	DeploymentResponseFull,
-	DeploymentResponseSingle,
+	FullDeploymentType,
+	SingleDeploymentType,
 } from "../Dapp";
 const ERROR_CODE_TX_REJECTED_BY_USER = 4001;
 
@@ -44,10 +44,10 @@ export async function genericTransactionHandler(
 	// @ts-ignore
 	console.log({ arguments });
 
-	const deploymentAll = that.state.deployment as DeploymentResponseFull;
+	const deploymentAll = that.state.deployment as FullDeploymentType;
 	const deploymentSingle = deploymentAll[
 		contract.address
-	] as DeploymentResponseSingle;
+	] as SingleDeploymentType;
 
 	if (erc20StandardConvertInts.includes(method)) {
 		const abi = deploymentSingle.abi;
@@ -110,23 +110,23 @@ function humanizeBigInts(abi, args: any[]) {
 	});
 }
 
-function robotizeBigInts(args: any[]) {
-	// ROBOTS PROBABLY MEAN
-	// 0000000000000000001
-	// NOT
-	// 1
-	return args.map((arg: any) => {
-		if (ethers.BigNumber.isBigNumber(arg)) {
-			return parseInt(convertEthToWei(arg));
-		} else {
-			return arg;
-		}
-	});
-}
+// function robotizeBigInts(args: any[]) {
+// 	// ROBOTS PROBABLY MEAN
+// 	// 0000000000000000001
+// 	// NOT
+// 	// 1
+// 	return args.map((arg: any) => {
+// 		if (ethers.BigNumber.isBigNumber(arg)) {
+// 			return parseInt(convertEthToWei(arg));
+// 		} else {
+// 			return arg;
+// 		}
+// 	});
+// }
 
 function convertWeiToEth(number: BigNumber) {
 	return ethers.utils.formatUnits(number, "wei");
 }
-function convertEthToWei(number: BigNumber) {
-	return ethers.utils.formatUnits(number, "eth");
-}
+// function convertEthToWei(number: BigNumber) {
+// 	return ethers.utils.formatUnits(number, "eth");
+// }
