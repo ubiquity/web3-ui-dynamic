@@ -107,7 +107,7 @@ export class Dapp extends React.Component {
 		}
 
 		const deployResultsJsonURL =
-			prompt(`Please provide a Deploy Results JSON URL to load the UI`) ||
+			prompt(`Please provide a Deploy Results JSON URL to load the UI. Cancel to load the default deployment.`) ||
 			false;
 
 		const deployment = deployResultsJsonURL
