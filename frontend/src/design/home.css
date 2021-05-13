@@ -1,6 +1,6 @@
 :root {
     /* --transition: 0.0625s all ease-in-out; */
-    --transition: none;
+    --transition: 0.125s all ease;
 }
 
 input,
@@ -28,15 +28,26 @@ input,
 button {
     box-shadow: 0 0 16px #00000020;
     transition: var(--transition);
-    will-change: opacity;
-    opacity: 0.5;
+    /* will-change: opacity; */
+    /* opacity: 0.5; */
+    color: #808080;
+    background-color: #fcfcfc;
+}
+
+::placeholder {
+    color: #80808080;
+}
+
+:focus::placeholder {
+    color: #808080;
 }
 
 input:hover,
 button:hover {
     /* box-shadow: inset 0 0 16px #00000020; */
-    /* transform: scale(0.99); */
+    transform: scale(0.99);
     opacity: 1;
+    background-color: #fff;
 }
 
 .contract {
@@ -72,7 +83,7 @@ button:hover {
     vertical-align: middle;
     margin: 4px;
     width: 320px;
-    box-shadow: 0 0 8px #00000020;
+    box-shadow: 0 0 16px #00000010;
 }
 
 .contract>form ol {
@@ -146,7 +157,8 @@ button:hover {
 }
 
 .contract>form:hover button {
-    opacity: 0.125;
+    /* opacity: 0.125; */
+    color: #000;
 }
 
 textarea {
