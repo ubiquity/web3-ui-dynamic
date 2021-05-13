@@ -16,6 +16,12 @@ export function Main({ dapp }: { dapp: Dapp }) {
 		throw new Error("no state.contracts");
 	}
 
+	// 	@FIXME:  should be dynamic
+	type TempType =
+		| "BondingShare"
+		| "UbiquityAlgorithmicDollarManager"
+		| "Bonding";
+
 	for (const singleDeploymentName in state.deployment?.contracts) {
 		const singleDeployment: SingleDeploymentType =
 			state.deployment?.contracts[singleDeploymentName];
@@ -28,7 +34,7 @@ export function Main({ dapp }: { dapp: Dapp }) {
 		protocolUi.push(
 			renderContract({
 				singleDeploymentAbi: singleDeployment.abi,
-				singleDeploymentName: address,
+				singleDeploymentName: singleDeploymentName as TempType,
 				state,
 				transactionHandler: dapp.transactionHandler(address, dapp),
 			})

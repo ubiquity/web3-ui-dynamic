@@ -57,6 +57,19 @@ button:hover {
     text-align: center;
     border: 2px dashed #00000020;
     border-radius: 4px;
+    position: relative;
+    color: #808080;
+}
+
+.contract::before {
+    content: attr(id);
+    display: block;
+    overflow-wrap: anywhere;
+    text-transform: none;
+    font-size: 24px;
+    position: absolute;
+    top: 0;
+    letter-spacing: 4px;
 }
 
 .contract>form {
