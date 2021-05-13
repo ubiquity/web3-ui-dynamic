@@ -99,7 +99,7 @@ button:hover {
 .contract>form button {
     pointer-events: none;
     box-shadow: none;
-    opacity: 0.25;
+    opacity: 0.5;
     font-size: 20px;
     background-color: transparent;
     white-space: nowrap;
@@ -201,5 +201,17 @@ textarea {
     }
     .contract>form {
         box-shadow: 0 0 8px #00000080;
+    }
+    .contract>form:hover button {
+        /* opacity: 0.125; */
+        color: #fff;
+    }
+    input,
+    button {
+        background-color: #030303;
+    }
+    input:hover,
+    button:hover {
+        background-color: #000;
     }
 }
