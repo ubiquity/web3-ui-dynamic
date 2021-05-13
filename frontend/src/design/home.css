@@ -64,26 +64,44 @@ button:hover {
 }
 
 .contract>form>ol {
-    display: none;
+    /* display: none; */
+    overflow: hidden;
+    height: 0;
+    transition: var(--transition);
 }
 
 .contract>form.open>ol {
-    display: initial;
-}
-
-.contract>form.open {
-    min-height: 192px;
+    /* display: initial; */
+    height: auto;
 }
 
 .contract>form {
+    min-height: 80px;
+    height: 64px;
+    /* background-color: #f00; */
+    /* overflow: hidden; */
+    transition: var(--transition);
+    /* border: 1px solid */
     min-height: 52px;
     /* background-color: #00000020; */
     max-width: 703px;
-    display: inline-block;
-    vertical-align: middle;
-    margin: 4px;
+    display: block;
+    /* vertical-align: middle; */
+    margin: 8px;
     width: 320px;
     box-shadow: 0 0 16px #00000010;
+}
+
+.contract>form:hover {
+    box-shadow: 0 0 4px #00000010;
+}
+
+.contract>form.open {
+    height: auto;
+}
+
+.contract>form.open>button {
+    visibility: hidden;
 }
 
 .contract>form ol {
@@ -97,28 +115,94 @@ button:hover {
 }
 
 .contract>form button {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    position: absolute;
+    left: 0;
+    width: 100%;
+    top: calc(50% - 24px);
+    /* font-family: monospace; */
+    /* color: #fff; */
+    text-transform: uppercase;
     pointer-events: none;
     box-shadow: none;
     opacity: 0.5;
-    font-size: 20px;
+    font-size: 16px;
     background-color: transparent;
-    white-space: nowrap;
+    /* white-space: nowrap; */
     overflow: hidden;
     text-overflow: ellipsis;
     /* text-overflow: ellipsis; */
     /* overflow: hidden; */
     /* word-break: break-all; */
+    letter-spacing: 4px;
+    top: 0;
+    height: 100%;
+    line-height: 1.25;
 }
 
 .contract>form.react-draggable-dragged {
     /* position: relative; */
     position: absolute;
+    /* --webkit-backdrop-filter: blur(var(--blur)); */
     backdrop-filter: blur(var(--blur));
-    --webkit-backdrop-filter: blur(var(--blur));
+    /* box-shadow: 0 0 8px #00000080; */
+}
+
+.contract>form:hover.react-draggable-dragged {
+    backdrop-filter: blur(2px);
+}
+
+.contract>form.react-draggable-dragged::before,
+.contract>form.react-draggable-dragged::after {
+    /* base */
+    --bar-height: 28px;
+    text-align: left;
+    content: "";
+    color: #808080;
+    letter-spacing: 2px;
+    display: block;
+    text-transform: none;
+    background: #c8c8c8;
+    /* width: calc(100% - 8px); */
+    width: 100%;
+    left: 0;
+    height: var(--bar-height);
+    position: absolute;
+    border-radius: 4px;
+    line-height: 1.75;
+    font-family: monospace;
+    text-indent: 12px;
+}
+
+.contract>form.react-draggable-dragged::before {
+    /* footer */
+    bottom: calc(-1 * var(--bar-height));
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
+    content: "";
+}
+
+.contract>form.react-draggable-dragged::after {
+    /* header */
+    top: calc(-1 * var(--bar-height));
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.contract>form.open.react-draggable-dragged::after {
+    /* header open */
+    content: " " attr(id) "(";
+}
+
+.contract>form.open.react-draggable-dragged::before {
+    /* footer open */
+    content: " );";
 }
 
 .contract>form ol {
-    opacity: 0;
+    opacity: 0.5;
 }
 
 .contract>form input {
@@ -126,7 +210,7 @@ button:hover {
 }
 
 .contract>form ol {
-    min-height: 48px;
+    /* min-height: 48px; */
 }
 
 .contract>form li {
@@ -145,15 +229,6 @@ button:hover {
 
 .contract>form:hover ol {
     opacity: 1;
-}
-
-.contract>form button {
-    position: absolute;
-    left: 0;
-    width: 100%;
-    top: calc(50% - 24px);
-    /* font-family: monospace; */
-    /* color: #fff; */
 }
 
 .contract>form:hover button {
@@ -202,16 +277,23 @@ textarea {
     .contract>form {
         box-shadow: 0 0 8px #00000080;
     }
+    .contract>form:hover {
+        box-shadow: 0 0 2px #00000080;
+    }
     .contract>form:hover button {
         /* opacity: 0.125; */
         color: #fff;
     }
     input,
     button {
-        background-color: #030303;
+        background-color: #101010;
     }
     input:hover,
     button:hover {
-        background-color: #000;
+        background-color: #202020;
+    }
+    .contract>form.react-draggable-dragged::before,
+    .contract>form.react-draggable-dragged::after {
+        background: #282828;
     }
 }
