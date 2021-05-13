@@ -5,7 +5,7 @@
 * {
     /* border: 1px solid; */
     border: none;
-    border-radius: 4px;
+    /* border-radius: 4px; */
     line-height: 1;
     font-size: 16px;
     margin: auto;
@@ -41,7 +41,7 @@ label {
 
 @media (prefers-color-scheme: dark) {
     body {
-        background-color: #282828;
+        background-color: #202020;
     }
     * {
         color: #fff;
