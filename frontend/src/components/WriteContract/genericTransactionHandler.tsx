@@ -2,8 +2,8 @@ import { BigNumber, ethers } from "ethers";
 import {
 	Dapp,
 	DeployedContracts,
-	FullDeploymentType,
-	SingleDeploymentType,
+	// FullDeploymentType,
+	// SingleDeploymentType,
 } from "../Dapp";
 const ERROR_CODE_TX_REJECTED_BY_USER = 4001;
 
@@ -44,14 +44,14 @@ export async function genericTransactionHandler(
 	// @ts-ignore
 	console.log({ arguments });
 
-	const deploymentAll = that.state.deployment as FullDeploymentType;
-	const deploymentSingle = deploymentAll[
-		contract.address
-	] as SingleDeploymentType;
+	// const deploymentAll = that.state.deployment as FullDeploymentType;
+	// const deploymentSingle = deploymentAll[
+	// 	contract.address
+	// ] as SingleDeploymentType;
 
 	if (erc20StandardConvertInts.includes(method)) {
-		const abi = deploymentSingle.abi;
-		args = humanizeBigInts(abi, args);
+		// const abi = deploymentSingle.abi;
+		args = humanizeBigInts(args);
 	}
 
 	const contractsAll = that.state.contracts as DeployedContracts;
@@ -95,7 +95,7 @@ async function writingToChain(
 	return receipt;
 }
 
-function humanizeBigInts(abi, args: any[]) {
+function humanizeBigInts(args: any[]) {
 	// HUMANS PROBABLY DIDN'T MEAN
 	// 0000000000000000001
 	// AND PROBABLY MEANT
@@ -123,7 +123,7 @@ function humanizeBigInts(abi, args: any[]) {
 // 		}
 // 	});
 // }
-
+//
 function convertWeiToEth(number: BigNumber) {
 	return ethers.utils.formatUnits(number, "wei");
 }
