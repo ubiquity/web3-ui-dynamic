@@ -2,7 +2,7 @@
     "license": "MIT",
     "scripts": {
         "prestart": "chmod +x ./hooks/prestart.sh && ./hooks/prestart.sh",
-        "start": "cd ./blockchain/ && yarn run-s run:blockchain:daemonize build:deploy",
+        "start": "chmod +x ./hooks/start.sh && ./hooks/start.sh",
         "poststart": "cd ./frontend/ && yarn start",
         "stop": "kill $(lsof -t -i:8545) || true",
         "poststop": "echo 'exited successfully'"
@@ -24,5 +24,8 @@
             "restart": "clear && printf '\\033[3J'",
             "start": "clear && printf '\\033[3J'"
         }
+    },
+    "devDependencies": {
+        "@types/node": "^15.0.2"
     }
 }
