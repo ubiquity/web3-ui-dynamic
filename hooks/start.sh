@@ -10,12 +10,12 @@ kill $(lsof -t -i:8545) || true
 echo "YOKL"
 echo $ALCHEMY_API_KEY
 echo "YOKL"
-yarn hardhat node --fork https://eth-mainnet.alchemyapi.io/v2/$ALCHEMY_API_KEY --fork-block-number 12150000 --show-accounts --export-all ../frontend/src/uad-contracts-deployment.json > node.log 2>&1 &
+yarn hardhat node --fork https://eth-mainnet.alchemyapi.io/v2/$ALCHEMY_API_KEY --fork-block-number 12150000 --show-accounts --export-all ../frontend/src/uad-contracts-deployment.json > ../local.node.log 2>&1 &
 sleep 10
 while : ; do
     [[ -f "./frontend/src/uad-contracts-deployment.json" ]] && break
     echo "Pausing until uad-contracts-deployment.json exists."
-    sleep 1
+    sleep 5
 done
 
 # yarn hardhat --network localhost run scripts/deploy-entry.ts   # we need a standardized way to hit the deployment scripts before this works seamlessly
