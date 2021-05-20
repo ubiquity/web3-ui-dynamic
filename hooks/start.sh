@@ -6,14 +6,16 @@ then
 fi
 
 cd ./contracts || echo "ERROR: ./contracts/ doesn't exist?"
+yarn && yarn compile
 kill $(lsof -t -i:8545) || true
 echo "YOKL"
 echo $ALCHEMY_API_KEY
 echo "YOKL"
+echo $(pwd)
 yarn hardhat node --fork https://eth-mainnet.alchemyapi.io/v2/$ALCHEMY_API_KEY --fork-block-number 12150000 --show-accounts --export-all ../frontend/src/uad-contracts-deployment.json > ../local.node.log 2>&1 &
 sleep 10
 while : ; do
-    [[ -f "./frontend/src/uad-contracts-deployment.json" ]] && break
+    [[ -f "../frontend/src/uad-contracts-deployment.json" ]] && break
     echo "Pausing until uad-contracts-deployment.json exists."
     sleep 5
 done
