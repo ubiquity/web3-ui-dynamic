@@ -241,7 +241,13 @@ export class Dapp extends React.Component {
 			if (!this.state.contracts) {
 				throw new Error(`contracts not initialized in state`);
 			}
-			const selectedContract = this.state.contracts[address];
+			const contractName = Object.keys(this.state.contracts).filter(ctrName => {
+				if (this.state.contracts) {
+					return this.state.contracts[ctrName].address === address
+				}
+				return false
+			});
+			const selectedContract =this.state.contracts[contractName[0]]
 			if (selectedContract) {
 				return await genericTransactionHandler.apply(dapp, [
 					selectedContract,
