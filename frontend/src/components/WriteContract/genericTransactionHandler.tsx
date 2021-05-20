@@ -55,7 +55,19 @@ export async function genericTransactionHandler(
 	}
 
 	const contractsAll = that.state.contracts as DeployedContracts;
-	const contractSingle = contractsAll[contract.address] as ethers.Contract;
+	const contractName = Object.keys(contractsAll).filter(ctrName => {
+			return contractsAll[ctrName].address === contract.address
+	});
+
+	console.log(`
+	*--*-*-
+	contractName:${contractName}
+	 contract.address:${contract.address}
+	 contractsAll:${contractsAll}
+	contractsAll[contract.address]:${contractsAll[contract.address]}
+
+	`)
+	const contractSingle = contractsAll[contractName[0]] as ethers.Contract;
 
 	const methodResponse = (await contractSingle[method].apply(this, [
 		...args,
