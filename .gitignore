@@ -113,3 +113,5 @@ deployments
 .DS_Store
 
 ignore/
+
+uad-contracts-deployment.json
