@@ -1,0 +1,15 @@
+#helper {
+    position: fixed;
+    bottom: 0;
+    /* border: 1px solid; */
+    left: 0;
+    backdrop-filter: blur(4px);
+    background-color: #ffffff10;
+    border-radius: 4px;
+    margin: 8px;
+}
+
+#helper>input {
+    margin: 2px;
+    display: block;
+}

@@ -6,6 +6,7 @@ import {
 	SingleDeploymentType,
 	InitialState,
 } from "./Dapp";
+import { Helper } from "./Helper";
 import { renderContract } from "./WriteContract/renderArtifactAsUserInterface";
 
 export function Main({ dapp }: { dapp: Dapp }) {
@@ -41,7 +42,7 @@ export function Main({ dapp }: { dapp: Dapp }) {
 		);
 	}
 
-	return <div>{protocolUi}</div>;
+	return <div><div>{protocolUi}</div><Helper id="helper"></Helper></div>;
 }
 
 // function common(dapp) {
