@@ -8,7 +8,7 @@ export function listInputItem(
 	const random=Math.random().toString();
 	const hashed=sha256(random);
 	const key = `${name}_${param.name}_${param.internalType}_${hashed}`;
-	console.log({ key });
+	// console.log({ key });
 
 	return (
 		<li key={key}>
