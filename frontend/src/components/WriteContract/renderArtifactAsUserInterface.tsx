@@ -63,7 +63,7 @@ function _mapping({ state, transactionHandler }: MappingParams) {
 		const contractMethodInputRender = [] as JSX.Element[];
 
 		for (const param of contractMethod.inputs) {
-			contractMethodInputRender.push(inputItem(param));
+			contractMethodInputRender.push(inputItem(param, contractMethod.name));
 		}
 
 		if (contractMethodInputRender.length) {
