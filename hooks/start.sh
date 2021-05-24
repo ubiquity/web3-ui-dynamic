@@ -1,10 +1,4 @@
 #!/bin/bash
-if ! command -v jq &> /dev/null
-then
-    echo "jq could not be found. Please install it."
-    exit
-fi
-
 
 if [ -f ./contracts/.env ]
 then
@@ -22,5 +16,5 @@ while : ; do
     echo "Pausing until uad-contracts-deployment.json exists."
     sleep 5
 done
-jq '.[].localhost' tmp-uad-contracts-deployment.json > ../frontend/src/uad-contracts-deployment.json 
-rm -f tmp-uad-contracts-deployment.json
+node ../hooks/process-deployment.js ./tmp-uad-contracts-deployment.json ../frontend/src/uad-contracts-deployment.json
+rm -f ./tmp-uad-contracts-deployment.json
