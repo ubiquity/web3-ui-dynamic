@@ -10,3 +10,8 @@ then run `$ yarn start`
 
 it will launch a local node on port **8545** you can check the log in the root file `local.node.log`
 after the node is launched it will build and run the front on port **3000**
+
+make sure to switch to the hardhat network on metamask
+
+- **chain ID:** 31337
+- **RPC URL:** http://127.0.0.1:8545

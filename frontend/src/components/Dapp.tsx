@@ -117,7 +117,7 @@ export class Dapp extends React.Component {
 		await this.loginUser(userWalletAddress, deployment);
 
 		window.ethereum.on("accountsChanged", accountsChangedHandler);
-		window.ethereum.on("networkChanged", networkChangedHandler);
+		window.ethereum.on("chainChanged", networkChangedHandler);
 		// debugger;
 
 		function networkChangedHandler([newAddress]) {
