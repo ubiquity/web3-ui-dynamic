@@ -32,7 +32,7 @@ export function renderContract({
 						_mapping({
 							state,
 							transactionHandler,
-							// address: singleDeploymentName,
+							address: singleDeploymentName,
 						})
 					)
 					.filter(Boolean) as JSX.Element[]
@@ -49,10 +49,10 @@ export interface Method {
 interface MappingParams {
 	state: InitialState;
 	transactionHandler: Function;
-	// address: DeployedContractName;
+	address: DeployedContractName;
 }
 
-function _mapping({ state, transactionHandler }: MappingParams) {
+function _mapping({ state, transactionHandler, address }: MappingParams) {
 	return function mapping(
 		contractMethod: Method | any
 	): JSX.Element | undefined {
@@ -68,7 +68,7 @@ function _mapping({ state, transactionHandler }: MappingParams) {
 
 		if (contractMethodInputRender.length) {
 			return renderContractMethod({
-				// address,
+				address,
 				method: contractMethod,
 				buffer: contractMethodInputRender,
 				state,

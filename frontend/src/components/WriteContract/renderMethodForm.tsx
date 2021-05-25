@@ -7,14 +7,14 @@ import { titleCase } from "title-case";
 import { InitialState } from "../Dapp";
 import { Method } from "./renderArtifactAsUserInterface";
 interface RenderContractMethodParams {
-	// address: string;
+	 address: string;
 	method: Method;
 	buffer: JSX.Element[];
 	state: InitialState;
 	transactionHandler: Function;
 }
 export function renderContractMethod({
-	// address,
+	 address,
 	method,
 	buffer,
 	state,
@@ -23,10 +23,11 @@ export function renderContractMethod({
 	return (
 		<Draggable key={method.name}>
 			<form
-				id={method.name}
+				id={ address + "_" + method.name}
 				// className="methodUi"
 				onClick={openMethod}
 				onSubmit={submitHandlerCurry({
+					address,
 					state,
 					method,
 					transactionHandler,

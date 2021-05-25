@@ -2,11 +2,13 @@ import { InitialState } from "../Dapp";
 import { Method } from "./renderArtifactAsUserInterface";
 import { submitHandler } from "./submitHandler";
 interface SubmitHandlerParams {
+	address: string;
 	state: InitialState;
 	method: Method;
 	transactionHandler: Function;
 }
 export function submitHandlerCurry({
+	address,
 	state,
 	method,
 	transactionHandler,
@@ -14,6 +16,7 @@ export function submitHandlerCurry({
 	return async (event) => {
 		try {
 			state.write = await submitHandler({
+				address,
 				event,
 				methodName: method.name,
 				transactionHandler,
